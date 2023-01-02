@@ -2,7 +2,8 @@
 
 jbcodemonkey update:  
 -Added \n input parser to process inputs line by line.  
--Added output sensor blocks for HomeAssistant.
+-Added output sensor blocks for HomeAssistant.  
+-Tested w SignalK and other tcp server nmea simulators.
 
 Original Content:
 Disclaimer: Since these are my first steps using node red and Javascript not every step or piece of code is the best solution that one can imagine. It's like a PoC. Use what you want to use and ignore the rest.
