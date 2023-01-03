@@ -482,14 +482,14 @@
         "id": "116cf96ee16cb2e3",
         "type": "ha-entity-config",
         "server": "6e623056.799cd",
-        "deviceConfig": "968e37475906c731",
-        "name": "AWS",
+        "deviceConfig": "183ff56b1345f079",
+        "name": "Depth",
         "version": "6",
         "entityType": "sensor",
         "haConfig": [
             {
                 "property": "name",
-                "value": "AWS"
+                "value": "Depth"
             },
             {
                 "property": "icon",
@@ -674,6 +674,52 @@
             {
                 "property": "name",
                 "value": "AWA"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d2eadfdb1b7ff54b",
+        "type": "ha-device-config",
+        "name": "AWS",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "97b112372f52f973",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "d2eadfdb1b7ff54b",
+        "name": "AWS",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
             },
             {
                 "property": "icon",
@@ -2437,8 +2483,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 240,
-        "y": 900,
+        "x": 1360,
+        "y": 1720,
         "wires": []
     },
     {
@@ -2537,7 +2583,7 @@
         "type": "ha-sensor",
         "z": "c4bfeb15a0b5facf",
         "name": "AWS",
-        "entityConfig": "116cf96ee16cb2e3",
+        "entityConfig": "97b112372f52f973",
         "version": 0,
         "state": "payload",
         "stateType": "msg",
@@ -2565,7 +2611,7 @@
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "AWA",
-        "func": "// $IIVWR\n\nmsg.payload = msg.Satz[1] + msg.Satz[2];\nreturn msg;\n",
+        "func": "// $IIVWR\n\n//msg.payload = msg.Satz[1] + msg.Satz[2];\n\nif (msg.Satz[2] === 'L') {\n    msg.payload = 360 - msg.Satz[1];\n} else {\n    msg.payload = msg.Satz[1];\n} \nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
