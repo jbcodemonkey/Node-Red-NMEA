@@ -472,7 +472,7 @@
     {
         "id": "968e37475906c731",
         "type": "ha-device-config",
-        "name": "Depth",
+        "name": "AWS",
         "hwVersion": "",
         "manufacturer": "Node-RED",
         "model": "",
@@ -483,13 +483,13 @@
         "type": "ha-entity-config",
         "server": "6e623056.799cd",
         "deviceConfig": "968e37475906c731",
-        "name": "Depth",
+        "name": "AWS",
         "version": "6",
         "entityType": "sensor",
         "haConfig": [
             {
                 "property": "name",
-                "value": "Depth"
+                "value": "AWS"
             },
             {
                 "property": "icon",
@@ -654,11 +654,57 @@
         "debugEnabled": false
     },
     {
+        "id": "e4b0b6af05f6764b",
+        "type": "ha-device-config",
+        "name": "AWA",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "6eae8aaf035d4363",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "e4b0b6af05f6764b",
+        "name": "AWA",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "AWA"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
         "id": "52228ddc.131534",
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "NMEA: main filter",
-        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   \n   Function: Since the checksum field isn't separated by comma, do that first. (replace '*' by ',@')\n   The switch command is used to control the NMEA sentence forwarding.\n   Since IIXDR has variable length is must be treated separately. Therefore there are two node outputs.\n*/\n\n\"use strict\"\n\nvar Nmea_Id = '';\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\n\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//msg.Satz = msg.Satz.split(/\\n/);\nmsg.Satz = msg.Satz.split(\",\");\n\nNmea_Id = msg.Satz[0];\n\nmsg.Nmea_Id = Nmea_Id;\n\nswitch (Nmea_Id) {\n    case '$GPAAM': return [msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPAPB': return [null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPBOD': return [null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPGGA': return [null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPGLC': return [null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPGLL': return [null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPGSA': return [null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPGSV': return [null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPRMB': return [null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPRMC': return [null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPVTG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPXTE': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$GPZDA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$IIXDR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$SDDBT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, msg];\n\n    case '$SDDPT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, msg];\n\n    case '$SDHDG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, msg];\n\n    case '$SDMTW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null];\n\n    case '$SDVHW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, msg];\n\n    case '$SDVLW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, msg];\n\n    case '$WIMWD': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, msg];\n\n    case '$WIMWV': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, msg];\n\n    case '$IIVWR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, msg];\n\n    case '$IIRPM': return null;\n\n    case '!AIVDO': return null;\n\n    default: return null;\n\n    /*    \n        [ null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, msg];   \n     */\n\n}\n\n",
+        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   \n   Function: Since the checksum field isn't separated by comma, do that first. (replace '*' by ',@')\n   The switch command is used to control the NMEA sentence forwarding.\n   Since IIXDR has variable length is must be treated separately. Therefore there are two node outputs.\n*/\n\n\"use strict\"\n\nvar Nmea_Id = '';\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\n\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//msg.Satz = msg.Satz.split(/\\n/);\nmsg.Satz = msg.Satz.split(\",\");\n\nNmea_Id = msg.Satz[0];\n\nmsg.Nmea_Id = Nmea_Id;\n\nswitch (Nmea_Id) {\n    case '$GPAAM': return [msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPAPB': return [null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPBOD': return [null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGGA': return [null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLC': return [null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLL': return [null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSA': return [null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSV': return [null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMB': return [null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMC': return [null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPVTG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPXTE': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPZDA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$IIXDR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDBT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDPT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDHDG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, msg];\n\n    case '$SDMTW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null];\n\n    case '$SDVHW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, msg];\n\n    case '$SDVLW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, msg];\n\n    case '$WIMWD': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, msg];\n\n    case '$WIMWV': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, msg];\n\n    case '$IIVWR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, msg];\n\n    case '$IIRPM': return null;\n\n    case '!AIVDO': return null;\n\n    default: return null;\n\n    /*    \n        [ null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, msg];   \n     */\n\n}\n\n",
         "outputs": 23,
         "noerr": 0,
         "initialize": "",
@@ -738,11 +784,12 @@
             [
                 "bb3c46cc.6266c"
             ],
-            [
-                "99ce38a14c770a8a"
-            ],
             [],
-            []
+            [],
+            [
+                "99ce38a14c770a8a",
+                "fe312ce6da53ef24"
+            ]
         ]
     },
     {
@@ -2452,18 +2499,19 @@
         "id": "99ce38a14c770a8a",
         "type": "function",
         "z": "c4bfeb15a0b5facf",
-        "name": "Wind speed",
-        "func": "// $IIVWR\n// convert and format depth\n\nmsg.payload = msg.Satz[1]; // + ' f';\nreturn msg;\n",
+        "name": "AWS",
+        "func": "// $IIVWR\n\n\nmsg.payload = msg.Satz[3];\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1250,
-        "y": 1600,
+        "x": 1230,
+        "y": 1640,
         "wires": [
             [
-                "f6c2c9f352d77da5"
+                "f6c2c9f352d77da5",
+                "974327eecae6496d"
             ]
         ]
     },
@@ -2475,13 +2523,96 @@
         "order": 10,
         "width": "0",
         "height": "0",
-        "name": "Wind Speed",
-        "label": "Wind speed",
+        "name": "AWS",
+        "label": "AWS",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1489.0000610351562,
-        "y": 1600.0000305175781,
+        "x": 1469.0000610351562,
+        "y": 1640.0000305175781,
         "wires": []
+    },
+    {
+        "id": "974327eecae6496d",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWS",
+        "entityConfig": "116cf96ee16cb2e3",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1670,
+        "y": 1640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6c7c58f9a532823",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "$IIVWR",
+        "info": "Wind Speed and Direction",
+        "x": 830,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "fe312ce6da53ef24",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWA",
+        "func": "// $IIVWR\n\nmsg.payload = msg.Satz[1] + msg.Satz[2];\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1230,
+        "y": 1580,
+        "wires": [
+            [
+                "b51a1286c1342a42",
+                "65d3a3f084a1f728"
+            ]
+        ]
+    },
+    {
+        "id": "b51a1286c1342a42",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "AWA",
+        "label": "Apparent Wind Angle",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1469.0000610351562,
+        "y": 1580.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "65d3a3f084a1f728",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWA",
+        "entityConfig": "6eae8aaf035d4363",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1670,
+        "y": 1580,
+        "wires": [
+            []
+        ]
     }
 ]
