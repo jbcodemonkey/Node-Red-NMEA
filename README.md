@@ -2,7 +2,7 @@
 
 jbcodemonkey update:  
 -Added \n input parser to process inputs line by line.  
--Added output sensor blocks for HomeAssistant.
+-Added output sensor blocks for HomeAssistant.  
 -Added support for AWS and AWA via $IIVWR.  
 -Tested w SignalK and other tcp server nmea simulators.
 
