@@ -1858,7 +1858,7 @@
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
         "name": "$GPVTG",
-        "info": "",
+        "info": "Track made good and ground speed",
         "x": 742.7665863037109,
         "y": 719.8667602539062,
         "wires": []
@@ -2483,8 +2483,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1360,
-        "y": 1720,
+        "x": 500,
+        "y": 1340,
         "wires": []
     },
     {
@@ -2611,7 +2611,7 @@
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "AWA",
-        "func": "// $IIVWR\n\n//msg.payload = msg.Satz[1] + msg.Satz[2];\n\nif (msg.Satz[2] === 'L') {\n    msg.payload = 360 - msg.Satz[1];\n} else {\n    msg.payload = msg.Satz[1];\n} \nreturn msg;\n",
+        "func": "// $IIVWR\n// Output delivered as 0-360 to work with 'compass card' in HA\n\n//msg.payload = msg.Satz[1] + msg.Satz[2];\n\nif (msg.Satz[2] === 'L') {\n    msg.payload = 360 - msg.Satz[1];\n} else {\n    msg.payload = msg.Satz[1];\n} \nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
