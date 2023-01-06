@@ -1,0 +1,438 @@
+substitutions:
+  devicename: display1
+
+esphome:
+  name: $devicename
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+
+api:
+
+ota:
+  password: "c7bf704410f7f6874f4661706a3da1b5"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: on
+  power_save_mode: high
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Display1 Fallback Hotspot"
+    password: "9QXQnGS7afms"
+
+captive_portal:
+
+deep_sleep:
+  #run_duration: 30s
+  #sleep_duration: 10s
+  id: deep_sleep_1
+  wakeup_pin: GPIO35 
+  wakeup_pin_mode: INVERT_WAKEUP
+
+time:
+  - platform: homeassistant
+    id: esptime
+    
+sensor:
+  - platform: wifi_signal
+    name: "display1 WiFi Signal"
+    update_interval: 10s
+    id: sstrength
+  - platform: homeassistant
+    id: temp_current
+    entity_id: sensor.dark_sky_temperature
+    internal: true
+  - platform: homeassistant
+    id: temp_high_0d
+    entity_id: sensor.dark_sky_daytime_high_temperature_0d
+    internal: true
+  - platform: homeassistant
+    id: temp_low_0d
+    entity_id: sensor.dark_sky_overnight_low_temperature_0d
+    internal: true
+  - platform: homeassistant
+    id: temp_high_1d
+    entity_id: sensor.dark_sky_daytime_high_temperature_1d
+    internal: true
+  - platform: homeassistant
+    id: temp_low_1d
+    entity_id: sensor.dark_sky_overnight_low_temperature_1d
+    internal: true
+  - platform: homeassistant
+    id: weather_precip_prob_0d
+    entity_id: sensor.dark_sky_precip_probability_0d
+    internal: true
+  - platform: homeassistant
+    id: cog
+    entity_id: sensor.cog
+    internal: true
+  - platform: homeassistant
+    id: sog
+    entity_id: sensor.sog
+    internal: true
+  - platform: homeassistant
+    id: depth
+    entity_id: sensor.depth
+    internal: true
+  - platform: homeassistant
+    id: awa
+    entity_id: sensor.awa
+    internal: true
+  - platform: homeassistant
+    id: aws
+    entity_id: sensor.aws
+    internal: true
+  - platform: uptime
+    name: ${devicename} Uptime
+    icon: mdi:clock-start
+
+binary_sensor:
+  - platform: status
+    name: "Node Status"
+    id: system_status
+  - platform: gpio
+    id: tdisplay_button_input_0
+    name: ${devicename} Top button
+    pin:
+      number: GPIO0
+      inverted: true
+    on_press:
+      then:
+        - display.page.show_next: screen
+        - component.update: screen
+    on_click:
+      min_length: 250ms
+      max_length: 1500ms
+      then:
+        - switch.toggle: backlight
+  - platform: gpio
+    id: tdisplay_button_input_1
+    name: ${devicename} Bottom button
+    pin:
+      number: GPIO35
+      inverted: true
+    on_release:
+      then:
+        - deep_sleep.enter:
+            id: deep_sleep_1
+            sleep_duration: 15s
+  - platform: homeassistant
+    id: motion_door
+    entity_id: binary_sensor.amcrest_camera_motion_detected
+    internal: true
+
+text_sensor:
+  - platform: homeassistant
+    id: weather_now
+    entity_id: sensor.dark_sky_summary
+    internal: true
+  - platform: homeassistant
+    id: weather_today
+    entity_id: sensor.dark_sky_summary_0d
+    internal: true
+  - platform: homeassistant
+    id: weather_tomorrow
+    entity_id: sensor.dark_sky_summary_1d
+    #value_template: '{{ sensor.dark_sky_summary_1d | regex_replace(find="–", replace="-") | int }}'
+    internal: true
+  - platform: homeassistant
+    id: weather_precip_0d
+    entity_id: sensor.dark_sky_precip_0d
+    internal: true
+        
+  - platform: wifi_info
+    ip_address:
+      internal: true
+      name: ESP IP Address
+      id: ipaddr
+    ssid:
+      internal: true
+      name: ESP Connected SSID
+    bssid:
+      internal: true
+      name: ESP Connected BSSID
+    mac_address:
+      internal: true
+      name: ESP Mac Wifi Address
+      id: mac
+
+
+switch:
+  - platform: restart
+    name: ${devicename} Restart
+  - platform: safe_mode
+    name: ${devicename} Safe Mode
+  - platform: gpio
+    pin: GPIO4
+    name: ${devicename} Backlight
+    id: backlight
+  - platform: template
+    name: ${devicename} Next Page
+    turn_on_action:
+      then:
+      - display.page.show_next: screen
+      - component.update: screen
+
+graph:
+# Show bare-minimum auto-ranged graph
+#  - id: single_temperature_graph
+#    sensor: temp_current
+#    duration: 24h
+#    width: 240
+#    height: 135
+  - id: multi_temperature_graph
+    duration: 10min
+    #x_grid: 10min
+    #y_grid: 1.0     # degC/div
+    width: 240
+    height: 135
+    traces:
+      - sensor: sstrength #temp_current
+        line_type: SOLID
+        line_thickness: 1
+        color: my_red
+
+#image:
+#  - file: "wifi-512.png"
+#    id: wifi_512
+#    resize: 100x100
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO19
+
+display:
+  - platform: st7789v #240x135
+    model: TTGO TDisplay 135x240
+    id: screen
+    backlight_pin: GPIO4
+    cs_pin: GPIO5
+    dc_pin: GPIO16
+    reset_pin: GPIO23
+    rotation: 270
+    update_interval: 1s
+    pages:
+      - id: page1
+        lambda: |-
+
+          it.rectangle(         0,  0,   it.get_width(),   21,                   id(dk_blue));
+          it.filled_rectangle(0+1,0+1,   it.get_width()-2, 21-2,                 id(dk2_blue));
+          it.rectangle(         0, 20,   it.get_width(),   88,                   id(dk_blue));
+          it.filled_rectangle(0+1, 20+1, it.get_width()-2, 88-2,                 id(dkr_blue));
+          it.rectangle(         0, 88,   it.get_width(),   it.get_height()-88,   id(dk_blue));
+          it.filled_rectangle(0+1, 88+1, it.get_width()-2, it.get_height()-88-2, id(dkr_blue));
+
+          it.strftime( 5,  6, id(pixelate_12), id(my_yellow), TextAlign::TOP_LEFT, "%I:%M %p", id(esptime).now());
+
+          if (id(system_status).state) {
+            it.print(235-8,  6, id(pixelate_12), id(my_green), TextAlign::TOP_RIGHT, "Online");
+            int x=(int)id(sstrength).state; 
+            if (x<0)
+            {
+              if ((x<0)   && (x>=-30))  it.filled_rectangle(230, 6+0,  4, 9, id(my_green));  //high
+              if ((x<-30) && (x>=-60))  it.filled_rectangle(230, 6+3,  4, 6, id(my_yellow)); //medium
+              if ((x<-60) && (x>-120))  it.filled_rectangle(230, 6+6,  4, 4, id(my_red));    //low
+            }
+          }
+          else {  
+          it.print(235,  6, id(pixelate_12), id(my_red), TextAlign::TOP_RIGHT, "Offline");
+          }
+
+          if (id(motion_door).state) { 
+            it.print(120,  6, id(pixelate_12), id(my_cyan), TextAlign::TOP_CENTER, "Door");
+          }
+          else {
+            it.print(120,  6, id(pixelate_12), id(my_green), TextAlign::TOP_CENTER, "");
+          }
+      
+          //it.image(8, 45, id(wifi_512));
+
+          it.printf(     6,  24, id(inconsolata_16), id(my_gray), TextAlign::TOP_LEFT,        "%.0f° %s", id(temp_current).state, id(weather_now).state.c_str());
+          it.printf( 240-6,  24, id(inconsolata_16), id(my_gray), TextAlign::TOP_RIGHT,  "L%.0f° H%.0f°", id(temp_low_0d).state, id(temp_high_0d).state);
+          it.printf(   120,  55, id(pixelate_12), id(my_gray), TextAlign::TOP_CENTER,            "%s", id(weather_today).state.c_str()); //65
+          if (id(weather_precip_prob_0d).state > 0) { 
+            it.printf(   120,  72, id(pixelate_12), id(my_gray), TextAlign::TOP_CENTER,     "%.0f%% chance of %s", id(weather_precip_prob_0d).state,id(weather_precip_0d).state.c_str());
+          }
+          else {
+            it.print(   120,  72, id(pixelate_12), id(my_gray), TextAlign::TOP_CENTER,     "No precipitation");
+          }
+          it.print(      6,  92, id(inconsolata_16), id(my_gray), TextAlign::TOP_LEFT,   "Tomorrow");
+          it.printf( 240-6,  92, id(inconsolata_16), id(my_gray), TextAlign::TOP_RIGHT,  "L%.0f° H%.0f°", id(temp_low_1d).state, id(temp_high_1d).state);
+          it.printf(   120, 118, id(pixelate_12),    id(my_gray), TextAlign::TOP_CENTER,            "%s", id(weather_tomorrow).state.c_str());
+
+      - id: page2
+        lambda: |-
+          it.rectangle(         0,      0, it.get_width(),   21,                     id(dk_blue));
+          it.filled_rectangle(0+1,    0+1, it.get_width()-2, 21-2,                   id(dk2_blue));
+          it.rectangle(         0,   0+20, it.get_width(),   it.get_height()-20,     id(dk_blue));
+          it.filled_rectangle(  1, 0+1+20, it.get_width()-2, it.get_height()-2-20,   id(dkr_blue));
+
+          it.strftime( 5,  6, id(pixelate_12), id(my_yellow), TextAlign::TOP_LEFT, "%I:%M %p", id(esptime).now());
+
+          if (id(system_status).state) {
+            it.print(235-8,  6, id(pixelate_12), id(my_green), TextAlign::TOP_RIGHT, "Online");
+            int x=(int)id(sstrength).state; 
+            if (x<0)
+            {
+              if ((x<0)   && (x>=-30))  it.filled_rectangle(230, 6+0,  4, 9, id(my_green));  //high
+              if ((x<-30) && (x>=-60))  it.filled_rectangle(230, 6+3,  4, 6, id(my_yellow)); //medium
+              if ((x<-60) && (x>-120))  it.filled_rectangle(230, 6+6,  4, 4, id(my_red));    //low
+            }
+          }
+          else {  
+          it.print(235,  6, id(pixelate_12), id(my_red), TextAlign::TOP_RIGHT, "Offline");
+          }
+
+          if (id(motion_door).state) { 
+            it.print(120,  6, id(pixelate_12), id(my_cyan), TextAlign::TOP_CENTER, "Door");
+          }
+          else {
+            it.print(120,  6, id(pixelate_12), id(my_green), TextAlign::TOP_CENTER, "");
+          }
+          int x=(int)id(sstrength).state; 
+          it.printf(0+6, 0+4+24,id(inconsolata_18),id(my_gray),"Wifi: %idb",x);
+          it.printf(0+6,20+4+24,id(inconsolata_18),id(my_gray),"Addr: %s",(id(ipaddr).state).c_str());
+          it.printf(0+6,40+4+24,id(inconsolata_18),id(my_gray),"MAC:  %s",(id(mac).state).c_str());             
+
+      - id: page3
+        lambda: |-
+          it.rectangle(         0,      0, it.get_width(),   21,                     id(dk_blue));
+          it.filled_rectangle(0+1,    0+1, it.get_width()-2, 21-2,                   id(dk2_blue));
+          it.rectangle(         0,   0+20, it.get_width(),   it.get_height()-20,     id(dk_blue));
+          it.filled_rectangle(  1, 0+1+20, it.get_width()-2, it.get_height()-2-20,   id(dkr_blue));
+
+          it.strftime( 5,  6, id(pixelate_12), id(my_yellow), TextAlign::TOP_LEFT, "%I:%M %p", id(esptime).now());
+
+          if (id(system_status).state) {
+            it.print(235-8,  6, id(pixelate_12), id(my_green), TextAlign::TOP_RIGHT, "Online");
+            int x=(int)id(sstrength).state; 
+            if (x<0)
+            {
+              if ((x<0)   && (x>=-30))  it.filled_rectangle(230, 6+0,  4, 9, id(my_green));  //high
+              if ((x<-30) && (x>=-60))  it.filled_rectangle(230, 6+3,  4, 6, id(my_yellow)); //medium
+              if ((x<-60) && (x>-120))  it.filled_rectangle(230, 6+6,  4, 4, id(my_red));    //low
+            }
+          }
+          else {  
+          it.print(235,  6, id(pixelate_12), id(my_red), TextAlign::TOP_RIGHT, "Offline");
+          }
+
+          if (id(motion_door).state) { 
+            it.print(120,  6, id(pixelate_12), id(my_cyan), TextAlign::TOP_CENTER, "Door");
+          }
+          else {
+            it.print(120,  6, id(pixelate_12), id(my_green), TextAlign::TOP_CENTER, "");
+          }
+          it.printf(0+6, 0+4+24, id(inconsolata_18), id(my_gray), "COG:   %.0f", id(cog).state);
+          it.printf(0+6,20+4+24, id(inconsolata_18), id(my_gray), "SOG:   %.0f", id(sog).state);
+          it.printf(0+6,40+4+24, id(inconsolata_18), id(my_gray), "AWA:   %.0f", id(awa).state);
+          it.printf(0+6,60+4+24, id(inconsolata_18), id(my_gray), "AWS:   %.0f", id(aws).state);
+          it.printf(0+6,80+4+24, id(inconsolata_18), id(my_gray), "Depth: %.0f", id(depth).state);
+
+
+      #- id: page4
+        #lambda: |-
+        #  //it.graph(0, 0, id(multi_temperature_graph), my_yellow);
+        #  std::string str=id(weather_today).state.c_str())  //"This is a scrolling text...";
+        #  intlength = str.length();
+        #  it.print(0, 0, id(inconsolata_18), str.c_str());
+        #  inti = 1;
+        #  while(i < length) {
+        #    delay(333);
+        #    str.replace(0,1,"");
+        #    it.print(0, 0, id(inconsolata_18), str.c_str());
+        #    i++;
+        #  }
+
+
+font:
+  # gfonts://family[@weight]
+  - file: "gfonts://VT323"
+    id: vt323_18
+    size: 18
+  - file: "pixelate.ttf"
+    id: pixelate_24
+    size: 24
+  - file: "pixelate.ttf"
+    id: pixelate_22
+    size: 22
+  - file: "pixelate.ttf"
+    id: pixelate_18
+    size: 18
+  - file: "pixelate.ttf"
+    id: pixelate_14
+    size: 14
+  - file: "pixelate.ttf"
+    id: pixelate_12
+    size: 12
+  - file: "inconsolata.ttf"
+    id: inconsolata_24
+    size: 24
+  - file: "inconsolata.ttf"
+    id: inconsolata_22
+    size: 22
+  - file: "inconsolata.ttf"
+    id: inconsolata_18
+    size: 18
+  - file: "inconsolata.ttf"
+    id: inconsolata_16
+    size: 16
+  - file: "inconsolata.ttf"
+    id: inconsolata_14
+    size: 14
+  - file: "inconsolata.ttf"
+    id: inconsolata_12
+    size: 12
+    
+color:
+  - id: my_red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: my_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: my_green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: my_blue
+    red: 10%
+    green: 10%
+    blue: 100%
+  - id: dk_blue
+    red: 0%
+    green: 0%
+    blue: 60%
+  - id: dk2_blue
+    red: 0%
+    green: 0%
+    blue: 20%
+  - id: dkr_blue
+    red: 0%
+    green: 0%
+    blue: 9%
+  - id: dkrr_blue
+    red: 0%
+    green: 0%
+    blue: 5%
+  - id: my_cyan
+    red: 0%
+    green: 80%
+    blue: 80%
+  - id: my_gray
+    red: 75%
+    green: 75%
+    blue: 75%
+  - id: dk_gray
+    red: 60%
+    green: 60%
+    blue: 60%
