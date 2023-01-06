@@ -14,7 +14,7 @@ logger:
 api:
 
 ota:
-  password: "c7bf704410f7f6874f4661706a3da1b5"
+  password: !secret display1_ota
 
 wifi:
   ssid: !secret wifi_ssid
@@ -25,7 +25,7 @@ wifi:
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Display1 Fallback Hotspot"
-    password: "9QXQnGS7afms"
+    password: !secret display1_wifi
 
 captive_portal:
 
@@ -43,7 +43,7 @@ time:
 sensor:
   - platform: wifi_signal
     name: "display1 WiFi Signal"
-    update_interval: 10s
+    update_interval: 30s
     id: sstrength
   - platform: homeassistant
     id: temp_current
@@ -330,11 +330,11 @@ display:
           else {
             it.print(120,  6, id(pixelate_12), id(my_green), TextAlign::TOP_CENTER, "");
           }
-          it.printf(0+6, 0+4+24, id(inconsolata_18), id(my_gray), "COG:   %.0f", id(cog).state);
-          it.printf(0+6,20+4+24, id(inconsolata_18), id(my_gray), "SOG:   %.0f", id(sog).state);
-          it.printf(0+6,40+4+24, id(inconsolata_18), id(my_gray), "AWA:   %.0f", id(awa).state);
-          it.printf(0+6,60+4+24, id(inconsolata_18), id(my_gray), "AWS:   %.0f", id(aws).state);
-          it.printf(0+6,80+4+24, id(inconsolata_18), id(my_gray), "Depth: %.0f", id(depth).state);
+          it.printf(0+6, 0+4+24, id(inconsolata_18), id(my_gray), "COG:   %3.0f", id(cog).state);
+          it.printf(0+6,20+4+24, id(inconsolata_18), id(my_gray), "SOG:   %3.1f", id(sog).state);
+          it.printf(0+6,40+4+24, id(inconsolata_18), id(my_gray), "AWA:   %3.0f", id(awa).state);
+          it.printf(0+6,60+4+24, id(inconsolata_18), id(my_gray), "AWS:   %3.0f", id(aws).state);
+          it.printf(0+6,80+4+24, id(inconsolata_18), id(my_gray), "Depth: %3.0f", id(depth).state);
 
 
       #- id: page4
