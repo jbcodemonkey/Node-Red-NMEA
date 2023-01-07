@@ -7,745 +7,6 @@
         "info": ""
     },
     {
-        "id": "6e623056.799cd",
-        "type": "server",
-        "name": "Home Assistant",
-        "addon": true
-    },
-    {
-        "id": "b0652885.6c6d8",
-        "type": "ui_group",
-        "name": "Navigation Data",
-        "tab": "6bc1a2cf.70709c",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "596dfba5.8c720c",
-        "type": "ui_group",
-        "name": "Compass",
-        "tab": "6bc1a2cf.70709c",
-        "order": 2,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "e9660793.9419",
-        "type": "ui_group",
-        "name": "Routing Data",
-        "tab": "5f14a6c8.fe72a",
-        "order": 4,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "604ac05d.2accd8",
-        "type": "ui_group",
-        "name": "Satellite Data",
-        "tab": "d15da7d4.0fb23",
-        "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "2e992207.609d26",
-        "type": "ui_group",
-        "name": "RMB",
-        "tab": "5f14a6c8.fe72a",
-        "order": 2,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "40a6636b.25d694",
-        "type": "ui_group",
-        "name": "Transducer Data",
-        "tab": "d15da7d4.0fb23",
-        "order": 2,
-        "disp": true,
-        "width": "6",
-        "collapse": true
-    },
-    {
-        "id": "f0a8cf1.e62c73",
-        "type": "ui_group",
-        "name": "Depths",
-        "tab": "6bc1a2cf.70709c",
-        "order": 5,
-        "disp": true,
-        "width": "6",
-        "collapse": true,
-        "className": ""
-    },
-    {
-        "id": "1bfc320.838e14e",
-        "type": "ui_group",
-        "name": "Trip",
-        "tab": "5f14a6c8.fe72a",
-        "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
-        "id": "7db9a1f8.c9b498",
-        "type": "ui_group",
-        "name": "not in use",
-        "tab": "d15da7d4.0fb23",
-        "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
-        "id": "ee835044.b7fcc",
-        "type": "ui_group",
-        "name": "Group 1",
-        "tab": "8c813a19.b99e88",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
-        "id": "6bc1a2cf.70709c",
-        "type": "ui_tab",
-        "name": "Basic Data",
-        "icon": "dashboard",
-        "order": 2
-    },
-    {
-        "id": "5f14a6c8.fe72a",
-        "type": "ui_tab",
-        "name": "Routing Data",
-        "icon": "dashboard",
-        "order": 3
-    },
-    {
-        "id": "d15da7d4.0fb23",
-        "type": "ui_tab",
-        "name": "Other stuff",
-        "icon": "dashboard",
-        "order": 4
-    },
-    {
-        "id": "8c813a19.b99e88",
-        "type": "ui_tab",
-        "name": "Routing",
-        "icon": "dashboard",
-        "order": 1
-    },
-    {
-        "id": "66bd7f6aa7de93fd",
-        "type": "ui_base",
-        "theme": {
-            "name": "theme-light",
-            "lightTheme": {
-                "default": "#0094CE",
-                "baseColor": "#0094CE",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
-                "edited": true,
-                "reset": false
-            },
-            "darkTheme": {
-                "default": "#097479",
-                "baseColor": "#097479",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
-                "edited": true,
-                "reset": false
-            },
-            "customTheme": {
-                "name": "Untitled Theme 1",
-                "default": "#4B7930",
-                "baseColor": "#4B7930",
-                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
-            },
-            "themeState": {
-                "base-color": {
-                    "default": "#0094CE",
-                    "value": "#0094CE",
-                    "edited": false
-                },
-                "page-titlebar-backgroundColor": {
-                    "value": "#0094CE",
-                    "edited": false
-                },
-                "page-backgroundColor": {
-                    "value": "#fafafa",
-                    "edited": false
-                },
-                "page-sidebar-backgroundColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "group-textColor": {
-                    "value": "#1bbfff",
-                    "edited": false
-                },
-                "group-borderColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "group-backgroundColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "widget-textColor": {
-                    "value": "#111111",
-                    "edited": false
-                },
-                "widget-backgroundColor": {
-                    "value": "#0094ce",
-                    "edited": false
-                },
-                "widget-borderColor": {
-                    "value": "#ffffff",
-                    "edited": false
-                },
-                "base-font": {
-                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
-                }
-            },
-            "angularTheme": {
-                "primary": "indigo",
-                "accents": "blue",
-                "warn": "red",
-                "background": "grey",
-                "palette": "light"
-            }
-        },
-        "site": {
-            "name": "Node-RED Dashboard",
-            "hideToolbar": "false",
-            "allowSwipe": "false",
-            "lockMenu": "false",
-            "allowTempTheme": "true",
-            "dateFormat": "DD/MM/YYYY",
-            "sizes": {
-                "sx": 48,
-                "sy": 48,
-                "gx": 6,
-                "gy": 6,
-                "cx": 6,
-                "cy": 6,
-                "px": 0,
-                "py": 0
-            }
-        }
-    },
-    {
-        "id": "36538c2b4ee8c5bc",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "ef03169a9feb3396",
-        "name": "SOG",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "SOG"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": "speed"
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": "mph"
-            },
-            {
-                "property": "state_class",
-                "value": "measurement"
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "ef03169a9feb3396",
-        "type": "ha-device-config",
-        "name": "SOG",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "44862df9b98c4b6d",
-        "type": "ha-device-config",
-        "name": "COG",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "c4760c4026b9fbb6",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "44862df9b98c4b6d",
-        "name": "COG",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "COG"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "183ff56b1345f079",
-        "type": "ha-device-config",
-        "name": "Depth",
-        "hwVersion": "",
-        "manufacturer": "NMEA",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "6c3483cb057e76a5",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "183ff56b1345f079",
-        "name": "",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "Depth"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "df0293e6aff8a15b",
-        "type": "ha-device-config",
-        "name": "LAT",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "172c54578c852f2d",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "df0293e6aff8a15b",
-        "name": "LAT",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "LAT"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "50ae81c58f38d00d",
-        "type": "ha-device-config",
-        "name": "LON",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "2482184f4ad2eb67",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "50ae81c58f38d00d",
-        "name": "LON",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "LON"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "968e37475906c731",
-        "type": "ha-device-config",
-        "name": "AWS",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "116cf96ee16cb2e3",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "183ff56b1345f079",
-        "name": "Depth",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "Depth"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": "distance"
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": "m"
-            },
-            {
-                "property": "state_class",
-                "value": "measurement"
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "6e585bd0f435ce58",
-        "type": "ha-device-config",
-        "name": "GPSTime",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "95237685892bad5f",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "6e585bd0f435ce58",
-        "name": "GPSTime",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "GPSTime"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": "date"
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": "measurement"
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "c28e18225a3bbea0",
-        "type": "ha-device-config",
-        "name": "GPSQuality",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "f7e733d2f1e66d00",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "c28e18225a3bbea0",
-        "name": "GPSQuality",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "GPSQuality"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "7509242e53c495d5",
-        "type": "ha-device-config",
-        "name": "GPSSatellites",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "7d1bd98111c9f44c",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "7509242e53c495d5",
-        "name": "GPSSatellites",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "GPSSatellites"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "e4b0b6af05f6764b",
-        "type": "ha-device-config",
-        "name": "AWA",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "6eae8aaf035d4363",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "e4b0b6af05f6764b",
-        "name": "AWA",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": "AWA"
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": ""
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": ""
-            },
-            {
-                "property": "state_class",
-                "value": ""
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
-        "id": "d2eadfdb1b7ff54b",
-        "type": "ha-device-config",
-        "name": "AWS",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
-    },
-    {
-        "id": "97b112372f52f973",
-        "type": "ha-entity-config",
-        "server": "6e623056.799cd",
-        "deviceConfig": "d2eadfdb1b7ff54b",
-        "name": "AWS",
-        "version": "6",
-        "entityType": "sensor",
-        "haConfig": [
-            {
-                "property": "name",
-                "value": ""
-            },
-            {
-                "property": "icon",
-                "value": ""
-            },
-            {
-                "property": "entity_category",
-                "value": ""
-            },
-            {
-                "property": "device_class",
-                "value": "speed"
-            },
-            {
-                "property": "unit_of_measurement",
-                "value": "mph"
-            },
-            {
-                "property": "state_class",
-                "value": "measurement"
-            }
-        ],
-        "resend": false,
-        "debugEnabled": false
-    },
-    {
         "id": "52228ddc.131534",
         "type": "function",
         "z": "c4bfeb15a0b5facf",
@@ -2660,5 +1921,583 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "b0652885.6c6d8",
+        "type": "ui_group",
+        "name": "Navigation Data",
+        "tab": "6bc1a2cf.70709c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "596dfba5.8c720c",
+        "type": "ui_group",
+        "name": "Compass",
+        "tab": "6bc1a2cf.70709c",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "e9660793.9419",
+        "type": "ui_group",
+        "name": "Routing Data",
+        "tab": "5f14a6c8.fe72a",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "604ac05d.2accd8",
+        "type": "ui_group",
+        "name": "Satellite Data",
+        "tab": "d15da7d4.0fb23",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "2e992207.609d26",
+        "type": "ui_group",
+        "name": "RMB",
+        "tab": "5f14a6c8.fe72a",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "40a6636b.25d694",
+        "type": "ui_group",
+        "name": "Transducer Data",
+        "tab": "d15da7d4.0fb23",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "f0a8cf1.e62c73",
+        "type": "ui_group",
+        "name": "Depths",
+        "tab": "6bc1a2cf.70709c",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "1bfc320.838e14e",
+        "type": "ui_group",
+        "name": "Trip",
+        "tab": "5f14a6c8.fe72a",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "7db9a1f8.c9b498",
+        "type": "ui_group",
+        "name": "not in use",
+        "tab": "d15da7d4.0fb23",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "36538c2b4ee8c5bc",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "ef03169a9feb3396",
+        "name": "SOG",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "SOG"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "speed"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kn"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "c4760c4026b9fbb6",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "44862df9b98c4b6d",
+        "name": "COG",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "COG"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "172c54578c852f2d",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "df0293e6aff8a15b",
+        "name": "LAT",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LAT"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "2482184f4ad2eb67",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "50ae81c58f38d00d",
+        "name": "LON",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LON"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "116cf96ee16cb2e3",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "183ff56b1345f079",
+        "name": "Depth",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Depth"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "distance"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "ft"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "95237685892bad5f",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "6e585bd0f435ce58",
+        "name": "GPSTime",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSTime"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "date"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "f7e733d2f1e66d00",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "c28e18225a3bbea0",
+        "name": "GPSQuality",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSQuality"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "7d1bd98111c9f44c",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "7509242e53c495d5",
+        "name": "GPSSatellites",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSSatellites"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "97b112372f52f973",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "d2eadfdb1b7ff54b",
+        "name": "AWS",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "speed"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kn"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "6eae8aaf035d4363",
+        "type": "ha-entity-config",
+        "server": "6e623056.799cd",
+        "deviceConfig": "e4b0b6af05f6764b",
+        "name": "AWA",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "AWA"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "6bc1a2cf.70709c",
+        "type": "ui_tab",
+        "name": "Basic Data",
+        "icon": "dashboard",
+        "order": 2
+    },
+    {
+        "id": "5f14a6c8.fe72a",
+        "type": "ui_tab",
+        "name": "Routing Data",
+        "icon": "dashboard",
+        "order": 3
+    },
+    {
+        "id": "d15da7d4.0fb23",
+        "type": "ui_tab",
+        "name": "Other stuff",
+        "icon": "dashboard",
+        "order": 4
+    },
+    {
+        "id": "6e623056.799cd",
+        "type": "server",
+        "name": "Home Assistant",
+        "addon": true
+    },
+    {
+        "id": "ef03169a9feb3396",
+        "type": "ha-device-config",
+        "name": "SOG",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "44862df9b98c4b6d",
+        "type": "ha-device-config",
+        "name": "COG",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "df0293e6aff8a15b",
+        "type": "ha-device-config",
+        "name": "LAT",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "50ae81c58f38d00d",
+        "type": "ha-device-config",
+        "name": "LON",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "183ff56b1345f079",
+        "type": "ha-device-config",
+        "name": "Depth",
+        "hwVersion": "",
+        "manufacturer": "NMEA",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "6e585bd0f435ce58",
+        "type": "ha-device-config",
+        "name": "GPSTime",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "c28e18225a3bbea0",
+        "type": "ha-device-config",
+        "name": "GPSQuality",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "7509242e53c495d5",
+        "type": "ha-device-config",
+        "name": "GPSSatellites",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "d2eadfdb1b7ff54b",
+        "type": "ha-device-config",
+        "name": "AWS",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "e4b0b6af05f6764b",
+        "type": "ha-device-config",
+        "name": "AWA",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
     }
 ]
