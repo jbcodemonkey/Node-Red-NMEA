@@ -262,15 +262,15 @@
             },
             {
                 "property": "device_class",
-                "value": ""
+                "value": "speed"
             },
             {
                 "property": "unit_of_measurement",
-                "value": ""
+                "value": "mph"
             },
             {
                 "property": "state_class",
-                "value": ""
+                "value": "measurement"
             }
         ],
         "resend": false,
@@ -501,15 +501,15 @@
             },
             {
                 "property": "device_class",
-                "value": ""
+                "value": "distance"
             },
             {
                 "property": "unit_of_measurement",
-                "value": ""
+                "value": "m"
             },
             {
                 "property": "state_class",
-                "value": ""
+                "value": "measurement"
             }
         ],
         "resend": false,
@@ -547,7 +547,7 @@
             },
             {
                 "property": "device_class",
-                "value": ""
+                "value": "date"
             },
             {
                 "property": "unit_of_measurement",
@@ -555,7 +555,7 @@
             },
             {
                 "property": "state_class",
-                "value": ""
+                "value": "measurement"
             }
         ],
         "resend": false,
@@ -731,15 +731,15 @@
             },
             {
                 "property": "device_class",
-                "value": ""
+                "value": "speed"
             },
             {
                 "property": "unit_of_measurement",
-                "value": ""
+                "value": "mph"
             },
             {
                 "property": "state_class",
-                "value": ""
+                "value": "measurement"
             }
         ],
         "resend": false,
