@@ -104,16 +104,6 @@
         "collapse": false
     },
     {
-        "id": "ee835044.b7fcc",
-        "type": "ui_group",
-        "name": "Group 1",
-        "tab": "8c813a19.b99e88",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
         "id": "6bc1a2cf.70709c",
         "type": "ui_tab",
         "name": "Basic Data",
@@ -422,15 +412,6 @@
         ],
         "resend": false,
         "debugEnabled": false
-    },
-    {
-        "id": "968e37475906c731",
-        "type": "ha-device-config",
-        "name": "AWS",
-        "hwVersion": "",
-        "manufacturer": "Node-RED",
-        "model": "",
-        "swVersion": ""
     },
     {
         "id": "6e585bd0f435ce58",
