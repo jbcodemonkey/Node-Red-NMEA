@@ -694,8 +694,8 @@
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "NMEA: main filter",
-        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   \n   Function: Since the checksum field isn't separated by comma, do that first. (replace '*' by ',@')\n   The switch command is used to control the NMEA sentence forwarding.\n   Since IIXDR has variable length is must be treated separately. Therefore there are two node outputs.\n*/\n\n\"use strict\"\n\nvar Nmea_Id = '';\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\n\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//msg.Satz = msg.Satz.split(/\\n/);\nmsg.Satz = msg.Satz.split(\",\");\n\nNmea_Id = msg.Satz[0];\n\nmsg.Nmea_Id = Nmea_Id;\n\nswitch (Nmea_Id) {\n    case '$GPAAM': return [msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPAPB': return [null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPBOD': return [null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGGA': return [null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLC': return [null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLL': return [null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSA': return [null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSV': return [null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMB': return [null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMC': return [null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPVTG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPXTE': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPZDA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$IIXDR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDBT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDPT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDHDG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, msg];\n\n    case '$SDMTW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null];\n\n    case '$SDVHW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, msg];\n\n    case '$SDVLW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, msg];\n\n    case '$WIMWD': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, msg];\n\n    case '$WIMWV': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, msg];\n\n    case '$IIVWR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, msg];\n\n    case '$IIRPM': return null;\n\n    case '!AIVDO': return null;\n\n    default: return null;\n\n    /*    \n        [ null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, msg];   \n     */\n\n}\n\n",
-        "outputs": 23,
+        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   \n   Function: Since the checksum field isn't separated by comma, do that first. (replace '*' by ',@')\n   The switch command is used to control the NMEA sentence forwarding.\n   Since IIXDR has variable length is must be treated separately. Therefore there are two node outputs.\n*/\n\n\"use strict\"\n\n//var Nmea_Id = '';\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\n\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//msg.Satz = msg.Satz.split(/\\n/);\nmsg.Satz = msg.Satz.split(\",\");\n\n//Nmea_Id = msg.Satz[0];\n//msg.Nmea_Id = Nmea_Id;\n\n\nswitch (msg.Satz[0]) {\n    case '$GPAAM': return [msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPAPB': return [null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPBOD': return [null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGGA': return [null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLC': return [null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGLL': return [null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSA': return [null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPGSV': return [null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMB': return [null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPRMC': return [null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPVTG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPXTE': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$GPZDA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$IIXDR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDBT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDDPT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, msg];\n\n    case '$SDHDG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, msg];\n\n    case '$SDMTW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null];\n\n    case '$SDVHW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, msg];\n\n    case '$SDVLW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, msg];\n\n    case '$WIMWD': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, msg];\n\n    case '$WIMWV': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, msg];\n\n    case '$IIVWR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, msg];\n\n    case '$IIRPM': return null;\n\n    case '!AIVDO': return null;\n\n    default: return null;\n\n    /*    \n        [ null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, null, null, null, null,\n                                null, msg];   \n     */\n\n}\n\n",
+        "outputs": 24,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -779,7 +779,8 @@
             [
                 "99ce38a14c770a8a",
                 "fe312ce6da53ef24"
-            ]
+            ],
+            []
         ]
     },
     {
@@ -1902,8 +1903,8 @@
         "trim": false,
         "base64": false,
         "tls": "",
-        "x": 148.88331604003906,
-        "y": 375.8833923339844,
+        "x": 150,
+        "y": 420,
         "wires": [
             [
                 "52228ddc.131534"
@@ -2604,5 +2605,35 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "99d9d8b2d2cf46b1",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "$SDMTW",
+        "info": "",
+        "x": 1100,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "defaff6737133d0c",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "$SDVHW",
+        "info": "",
+        "x": 1060,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "d814c5d7db1a239f",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "$SDVLW",
+        "info": "",
+        "x": 1040,
+        "y": 1320,
+        "wires": []
     }
 ]
