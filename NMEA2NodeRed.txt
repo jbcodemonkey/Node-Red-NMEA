@@ -740,14 +740,14 @@
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "NMEA: main filter",
-        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   This node returns an array. The position of the msg in the array determines which output receives the msg.\n   The bottom (last) output received all msgs.\n   To add support for additional sentences, the return array must be expanded for all cases and the node outputs increased on the setup tab.\n   \n*/\nvar messagetype;\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//split the sentence into an array by commas\nmsg.Satz = msg.Satz.split(\",\");\n\n// The last three characters of the first field define the message type and which output of the node\nmessagetype = msg.Satz[0].slice(-3);\n\nswitch (messagetype) {\n    case 'AAM': return [msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'APB': return [null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'BOD': return [null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GGA': return [null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLC': return [null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLL': return [null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSA': return [null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSV': return [null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMB': return [null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMC': return [null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'VTG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XTE': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'ZDA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XDR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DBT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DPT': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, msg];\n    case 'HDG': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, msg];\n    case 'MTW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, msg];\n    case 'VHW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, msg];\n    case 'VLW': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, msg];\n    case 'MWD': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, msg];\n    case 'MWV': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, msg];\n    case 'VWR': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, msg];\n    case 'RSA': return [null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, msg];\n    case 'RPM': return null;\n    case 'VDO': return null;\n    default: return null;\n}\n",
+        "func": "/* \n   Filter NMEA sentences. Known sentences:\n   $GPAAM, $GPAPB, $GPBOD, $GPGGA, $GPGLC, $GPGLL, \n   $GPGSA, $GPGSV, $GPRMB, $GPRMC, $GPVTG, $GPXTE, \n   $GPZDA, $IIXDR, $SDDBT, $SDDPT, $SDHDG, $SDMTW, \n   $SDVHW, $SDVLW, $WIMWD, $WIMWV\n   This node returns an array. The position of the msg in the array determines which output receives the msg.\n   The bottom (last) output received all msgs.\n   To add support for additional sentences, the return array must be expanded for all cases and the node outputs increased on the setup tab.\n   \n*/\nvar messagetype;\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//split the sentence into an array by commas\nmsg.Satz = msg.Satz.split(\",\");\n\n// The last three characters of the first field define the message type and which output of the node\nmessagetype = msg.Satz[0].slice(-3);\n\nswitch (messagetype) {\n    case 'AAM': return [\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'APB': return [\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'BOD': return [\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GGA': return [\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLC': return [\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLL': return [\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSA': return [\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSV': return [\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMB': return [\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMC': return [\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'VTG': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XTE': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'ZDA': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XDR': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DBT': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DPT': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, msg];\n    case 'HDG': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, msg];\n    case 'MTW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, msg];\n    case 'VHW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, msg];\n    case 'VLW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, msg];\n    case 'MWD': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, msg];\n    case 'MWV': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, msg];\n    case 'VWR': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, msg];\n    case 'RSA': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, msg];\n    case 'RPM': return null;\n    case 'VDO': return null;\n    default: return null;\n}\n",
         "outputs": 25,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 190,
-        "y": 620,
+        "x": 160,
+        "y": 360,
         "wires": [
             [],
             [
@@ -847,8 +847,8 @@
         "label": "LAT",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1419.999984741211,
-        "y": 652.0000610351562,
+        "x": 910,
+        "y": 860,
         "wires": []
     },
     {
@@ -863,8 +863,8 @@
         "label": "LON",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1419.999984741211,
-        "y": 684.0000610351562,
+        "x": 910,
+        "y": 892,
         "wires": []
     },
     {
@@ -875,8 +875,8 @@
         "func": " //convert and format latitude\n \n        var value_in = msg.Satz[3];\n    \n        msg.payload = value_in.substr(0,2) + '°' + ' ' + value_in.substr(2,5) + \"' \" + msg.Satz[4];\n     \n        return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1234.999984741211,
-        "y": 652.0000610351562,
+        "x": 725,
+        "y": 860,
         "wires": [
             [
                 "343f79b.abaa206",
@@ -892,8 +892,8 @@
         "func": "// convert and format longitude\n\n  var value_in = msg.Satz[5];\n        \n  msg.payload = value_in.substr(0,3) + '°' + ' ' + value_in.substr(3,5) + \"' \" + msg.Satz[6];\n  \n  return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1245.999984741211,
-        "y": 684.0000610351562,
+        "x": 736,
+        "y": 892,
         "wires": [
             [
                 "c7396282.341eb8",
@@ -912,8 +912,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1245.999984741211,
-        "y": 715.0000610351562,
+        "x": 736,
+        "y": 923,
         "wires": [
             [
                 "4450ef39.b653e",
@@ -932,8 +932,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1244.999984741211,
-        "y": 747.0000610351562,
+        "x": 735,
+        "y": 955,
         "wires": [
             [
                 "fa638f24.5d0808",
@@ -945,10 +945,10 @@
         "id": "692fcbb1.b40c74",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$GPRMC",
+        "name": "RMC",
         "info": "Recommended Minimum Navigation Information",
-        "x": 676.9999847412109,
-        "y": 631.0000610351562,
+        "x": 550,
+        "y": 780,
         "wires": []
     },
     {
@@ -959,8 +959,8 @@
         "func": "/* convert and format heading\n*  Sentence:\n        magnetic sensor heading, degrees\n        magnetic deviation, degrees\n        magnetic deviation direction, E/W\n        magnetic variation, degrees\n        magnetic variation direction, E/W\n*/\n        var Hdg = new Object();\n        \n        Hdg.hdg = msg.Satz[1] + '°';\n        Hdg.dev = msg.Satz[2] + '°' +  msg.Satz[3];\n        Hdg.Decl= msg.Satz[4] + '°' + msg.Satz[5];\n    \n        return [Hdg];\n        ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1262.999984741211,
-        "y": 1133.0000610351562,
+        "x": 740,
+        "y": 1380,
         "wires": [
             [
                 "1d8bab1a.9d13e5",
@@ -991,8 +991,8 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 1419.999984741211,
-        "y": 747.0000610351562,
+        "x": 910,
+        "y": 955,
         "wires": []
     },
     {
@@ -1017,8 +1017,8 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 1468.366683959961,
-        "y": 715.2500610351562,
+        "x": 958.36669921875,
+        "y": 923.25,
         "wires": []
     },
     {
@@ -1033,8 +1033,8 @@
         "label": "MgK",
         "format": "{{msg.hdg}}",
         "layout": "row-spread",
-        "x": 1516.999984741211,
-        "y": 1132.0000610351562,
+        "x": 994,
+        "y": 1379,
         "wires": []
     },
     {
@@ -1049,8 +1049,8 @@
         "label": "MW",
         "format": "{{msg.Decl}}",
         "layout": "row-spread",
-        "x": 1516.999984741211,
-        "y": 1165.0000610351562,
+        "x": 994,
+        "y": 1412,
         "wires": []
     },
     {
@@ -1065,18 +1065,18 @@
         "label": "ABL",
         "format": "{{msg.dev}}",
         "layout": "row-spread",
-        "x": 1517.999984741211,
-        "y": 1196.0000610351562,
+        "x": 995,
+        "y": 1443,
         "wires": []
     },
     {
         "id": "fa983ec4.b85ed8",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDHDG",
+        "name": "HDG",
         "info": "Heading - Deviation & Variation",
-        "x": 1074.999984741211,
-        "y": 1119.0000610351562,
+        "x": 530,
+        "y": 1380,
         "wires": []
     },
     {
@@ -1087,8 +1087,8 @@
         "func": " //convert and format Cross Track Error\n \n \n        var value_in = msg.Satz[5];\n        \n        if ( value_in == \"N\")\n        {\n            msg.payload = msg.Satz[3] + \" nm\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[3] + \" km\";\n            \n        }\n            \n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 430,
-        "y": 60,
+        "x": 710,
+        "y": 40,
         "wires": [
             [
                 "d52ea071.229ad8"
@@ -1107,8 +1107,8 @@
         "label": "XTE",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 617,
-        "y": 60.05000305175781,
+        "x": 897,
+        "y": 40.05000305175781,
         "wires": []
     },
     {
@@ -1119,8 +1119,8 @@
         "func": " //convert and format \"Steer R or L\"\n \n        msg.payload = msg.Satz[4] ;\n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 390.11669921875,
-        "y": 90.94999694824219,
+        "x": 670.11669921875,
+        "y": 70.94999694824219,
         "wires": [
             [
                 "a4f2dc52.debdd"
@@ -1140,8 +1140,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 618.11669921875,
-        "y": 90.94999694824219,
+        "x": 898.11669921875,
+        "y": 70.94999694824219,
         "wires": []
     },
     {
@@ -1152,8 +1152,8 @@
         "func": " //convert and format \"Arrival circle entered\"\n \n    msg.payload = msg.Satz[6];\n  \n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 440.11669921875,
-        "y": 122.94999694824219,
+        "x": 720.11669921875,
+        "y": 102.94999694824219,
         "wires": [
             [
                 "e049a21d.1d73c8"
@@ -1172,8 +1172,8 @@
         "label": "Arrival Circle entered",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 670,
-        "y": 123.05000305175781,
+        "x": 950,
+        "y": 103.05000305175781,
         "wires": []
     },
     {
@@ -1184,8 +1184,8 @@
         "func": " //convert and format \"Perpendicular passed at waypoint \"\n \n    msg.payload = msg.Satz[7];\n  \n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 431.11669921875,
-        "y": 155.9499969482422,
+        "x": 711.11669921875,
+        "y": 135.9499969482422,
         "wires": [
             [
                 "1e65347c.887b0c"
@@ -1204,8 +1204,8 @@
         "label": "WP perpendicular",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 659.11669921875,
-        "y": 154.9499969482422,
+        "x": 939.11669921875,
+        "y": 134.9499969482422,
         "wires": []
     },
     {
@@ -1216,8 +1216,8 @@
         "func": " //convert and format \"Bearing origin to destination\"\n \n \n        var value_in = msg.Satz[9];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[8] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[8] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 410.11669921875,
-        "y": 186.9499969482422,
+        "x": 690.11669921875,
+        "y": 166.9499969482422,
         "wires": [
             [
                 "17ca4c63.a92b14"
@@ -1236,8 +1236,8 @@
         "label": "Bearing Org to Dest",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 672,
-        "y": 187.0500030517578,
+        "x": 952,
+        "y": 167.0500030517578,
         "wires": []
     },
     {
@@ -1248,8 +1248,8 @@
         "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[10];\n  \n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 401.11669921875,
-        "y": 218.9499969482422,
+        "x": 681.11669921875,
+        "y": 198.9499969482422,
         "wires": [
             [
                 "c6dfa630.f6988"
@@ -1268,8 +1268,8 @@
         "label": "Destination Waypoint",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 671.11669921875,
-        "y": 216.9499969482422,
+        "x": 951.11669921875,
+        "y": 196.9499969482422,
         "wires": []
     },
     {
@@ -1280,8 +1280,8 @@
         "func": " //convert and format \"Bearing position to destination\"\n \n \n        var value_in = msg.Satz[12];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[11] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[11] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 421.11669921875,
-        "y": 250.9499969482422,
+        "x": 701.11669921875,
+        "y": 230.9499969482422,
         "wires": [
             [
                 "fb3e99ba.531b38"
@@ -1300,18 +1300,18 @@
         "label": "Bearing Pos to Dest",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 672.11669921875,
-        "y": 248.9499969482422,
+        "x": 952.11669921875,
+        "y": 228.9499969482422,
         "wires": []
     },
     {
         "id": "cf394344.555e28",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$GPABP",
+        "name": "ABP",
         "info": "Autopilot Sentence \"B\"",
-        "x": 340,
-        "y": 340,
+        "x": 520,
+        "y": 180,
         "wires": []
     },
     {
@@ -1322,8 +1322,8 @@
         "func": " //convert and format \"Heading position to destination\"\n \n        var value_in = msg.Satz[14];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[13] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[13] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 412.11669921875,
-        "y": 283.9499969482422,
+        "x": 692.11669921875,
+        "y": 263.9499969482422,
         "wires": [
             [
                 "48b816e5.5c08f8"
@@ -1342,8 +1342,8 @@
         "label": "Heading Pos to Dest",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 672.11669921875,
-        "y": 282.9499969482422,
+        "x": 952.11669921875,
+        "y": 262.9499969482422,
         "wires": []
     },
     {
@@ -1354,8 +1354,8 @@
         "func": " //convert and format \"UTC\"\n // Sentence GGA\n \n        var value_in = msg.Satz[1];\n    \n        msg.payload = value_in.substr(0,2) + ':' + value_in.substr(2,2) + \":\" + value_in.substr(4,2);\n     \n        return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1219.999984741211,
-        "y": 155.00006103515625,
+        "x": 710,
+        "y": 363,
         "wires": [
             [
                 "1ed95404.1211fc",
@@ -1375,8 +1375,8 @@
         "label": "UTC",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1407.999984741211,
-        "y": 155.00006103515625,
+        "x": 898,
+        "y": 363,
         "wires": []
     },
     {
@@ -1387,8 +1387,8 @@
         "func": "//convert and format \"GPS quality\"\n // Sentence GGA\n \nvar Mesg;\nGPS_Q = msg.Satz[6];\n\nswitch(GPS_Q){\n    case '0': msg.payload = \"fix no available\";\n              break;\n    case '1': msg.payload = \"GPS fix\";\n              break;\n    case '2': msg.payload = \"Differential GPS fix\";\n}\n    return msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1200.999984741211,
-        "y": 184.00006103515625,
+        "x": 691,
+        "y": 392,
         "wires": [
             [
                 "55ced550.baf934",
@@ -1408,8 +1408,8 @@
         "label": "GPS quality",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1428.999984741211,
-        "y": 185.00006103515625,
+        "x": 919,
+        "y": 393,
         "wires": []
     },
     {
@@ -1420,8 +1420,8 @@
         "func": " //convert and format \"number of satellites\"\n // Sentence GGA\n \n        msg.payload = msg.Satz[7];\n        return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1190.999984741211,
-        "y": 216.00006103515625,
+        "x": 681,
+        "y": 424,
         "wires": [
             [
                 "3e3bd906.6da186",
@@ -1441,18 +1441,18 @@
         "label": "number of sats",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1438.999984741211,
-        "y": 216.00006103515625,
+        "x": 929,
+        "y": 424,
         "wires": []
     },
     {
         "id": "ba9301fb.df0bf",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$GPGGA",
+        "name": "GGA",
         "info": "Global Positioning System Fix Data, \nTime, Position and fix related data \nfor a GPS receiver.",
-        "x": 522.9999847412109,
-        "y": 447.00006103515625,
+        "x": 530,
+        "y": 380,
         "wires": []
     },
     {
@@ -1463,8 +1463,8 @@
         "func": "//convert and format \"HDOP\"\n// Horizontal Dilution of precision\n// Sentence GGA\n\n\n msg.payload = msg.Satz[8];\n return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1182.999984741211,
-        "y": 247.00006103515625,
+        "x": 673,
+        "y": 455,
         "wires": [
             [
                 "532123d8.be750c"
@@ -1483,8 +1483,8 @@
         "label": "HDOP",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1409.999984741211,
-        "y": 248.00006103515625,
+        "x": 900,
+        "y": 456,
         "wires": []
     },
     {
@@ -1495,8 +1495,8 @@
         "func": "//convert and format \"antenna altitude\"\n// Sentence GGA\n// Antenna Altitude above/below mean-sea-level (geoid)\n\n msg.payload = msg.Satz[9];\n return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1203.766616821289,
-        "y": 279.1667175292969,
+        "x": 693.7666320800781,
+        "y": 487.1666564941406,
         "wires": [
             [
                 "c9ddc138.379ae8"
@@ -1516,8 +1516,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1439.0832977294922,
-        "y": 280.0834045410156,
+        "x": 929.0833129882812,
+        "y": 488.0833435058594,
         "wires": []
     },
     {
@@ -1528,8 +1528,8 @@
         "func": " //convert and format Cross Track Error\n \n \n       \n    msg.payload = msg.Satz[2] + \" nm\";\n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1235.883285522461,
-        "y": 318.8833923339844,
+        "x": 725.88330078125,
+        "y": 526.8833312988281,
         "wires": [
             [
                 "2446ca21.7fa01e"
@@ -1540,10 +1540,10 @@
         "id": "26ba8e99.84094a",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$GPRMB",
+        "name": "RMB",
         "info": "",
-        "x": 552.7665863037109,
-        "y": 545.0667114257812,
+        "x": 530,
+        "y": 560,
         "wires": []
     },
     {
@@ -1554,8 +1554,8 @@
         "func": " //convert and format \"Steer R or L\"\n \n        msg.payload = msg.Satz[3] ;\n        \n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1186.883285522461,
-        "y": 350.8833923339844,
+        "x": 676.88330078125,
+        "y": 558.8833312988281,
         "wires": [
             [
                 "ab3368d0.5a222"
@@ -1570,8 +1570,8 @@
         "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[5];\n  \n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1187.883285522461,
-        "y": 416.88336181640625,
+        "x": 677.88330078125,
+        "y": 624.88330078125,
         "wires": [
             [
                 "1fc82d5e.c28973"
@@ -1590,8 +1590,8 @@
         "label": "To Waypoint",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1431.883285522461,
-        "y": 416.88336181640625,
+        "x": 921.88330078125,
+        "y": 624.88330078125,
         "wires": []
     },
     {
@@ -1602,8 +1602,8 @@
         "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[4];\n  \n    return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1195.883285522461,
-        "y": 383.88336181640625,
+        "x": 685.88330078125,
+        "y": 591.88330078125,
         "wires": [
             [
                 "31aa5072.e3807"
@@ -1622,8 +1622,8 @@
         "label": "From Waypoint",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1441.883285522461,
-        "y": 383.88336181640625,
+        "x": 931.88330078125,
+        "y": 591.88330078125,
         "wires": []
     },
     {
@@ -1634,8 +1634,8 @@
         "func": " //convert and format latitude\n \n        var value_in = msg.Satz[6];\n    \n        msg.payload = value_in.substr(0,2) + '°' + ' ' + value_in.substr(2,5) + \"' \" + msg.Satz[7];\n     \n        return [msg];\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1216.999984741211,
-        "y": 449.00006103515625,
+        "x": 707,
+        "y": 657,
         "wires": [
             [
                 "b94ff398.d4114"
@@ -1654,8 +1654,8 @@
         "label": "Dest.WP LAT",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1445.999984741211,
-        "y": 449.00006103515625,
+        "x": 936,
+        "y": 657,
         "wires": []
     },
     {
@@ -1666,8 +1666,8 @@
         "func": "// convert and format longitude\n\n  var value_in = msg.Satz[8];\n        \n  msg.payload = value_in.substr(0,3) + '°' + ' ' + value_in.substr(3,5) + \"' \" + msg.Satz[9];\n  \n  return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1219.999984741211,
-        "y": 481.00006103515625,
+        "x": 710,
+        "y": 689,
         "wires": [
             [
                 "7ad3724f.4bf6bc"
@@ -1686,8 +1686,8 @@
         "label": "Dest. WP LON",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1443.999984741211,
-        "y": 481.00006103515625,
+        "x": 934,
+        "y": 689,
         "wires": []
     },
     {
@@ -1698,8 +1698,8 @@
         "func": "// convert and format longitude\n\nmsg.payload = msg.Satz[10] + ' nm' ;\n  \nreturn msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1220.749984741211,
-        "y": 513.7500610351562,
+        "x": 710.75,
+        "y": 721.75,
         "wires": [
             [
                 "ce0b29a9.5ee6c"
@@ -1718,8 +1718,8 @@
         "label": "Range to Dest.",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1443.749984741211,
-        "y": 513.7500610351562,
+        "x": 933.75,
+        "y": 721.75,
         "wires": []
     },
     {
@@ -1730,8 +1730,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[11]\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1210.999984741211,
-        "y": 545.0000610351562,
+        "x": 701,
+        "y": 753,
         "wires": [
             [
                 "b9230e9d.e7a31"
@@ -1750,8 +1750,8 @@
         "label": "BRG to Dest.",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1439.999984741211,
-        "y": 545.0000610351562,
+        "x": 930,
+        "y": 753,
         "wires": []
     },
     {
@@ -1762,8 +1762,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[12];\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1221.999984741211,
-        "y": 577.0000610351562,
+        "x": 712,
+        "y": 785,
         "wires": [
             [
                 "21b93ff4.7965f"
@@ -1782,8 +1782,8 @@
         "label": "VMG to Dest.",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1450.999984741211,
-        "y": 577.0000610351562,
+        "x": 941,
+        "y": 785,
         "wires": []
     },
     {
@@ -1794,8 +1794,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[13];\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1222.999984741211,
-        "y": 609.0000610351562,
+        "x": 713,
+        "y": 817,
         "wires": [
             [
                 "9dd6929a.e86b1"
@@ -1814,8 +1814,8 @@
         "label": "Arrival Status",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1451.999984741211,
-        "y": 609.0000610351562,
+        "x": 942,
+        "y": 817,
         "wires": []
     },
     {
@@ -1826,8 +1826,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[1];\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1234.749984741211,
-        "y": 782.7500610351562,
+        "x": 724.75,
+        "y": 990.75,
         "wires": [
             [
                 "73ac04e1.52c2f4"
@@ -1846,18 +1846,18 @@
         "label": "Track Degrees (true)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1445.749984741211,
-        "y": 782.7500610351562,
+        "x": 935.75,
+        "y": 990.75,
         "wires": []
     },
     {
         "id": "99439ad8.679d98",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$GPVTG",
+        "name": "VTG",
         "info": "Track made good and ground speed",
-        "x": 742.7665863037109,
-        "y": 719.8667602539062,
+        "x": 550,
+        "y": 900,
         "wires": []
     },
     {
@@ -1868,8 +1868,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[3];\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1243.883285522461,
-        "y": 815.8833312988281,
+        "x": 733.88330078125,
+        "y": 1023.8832702636719,
         "wires": [
             [
                 "b4630c19.d0cf8"
@@ -1888,8 +1888,8 @@
         "label": "Track Degrees (mag)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1459.883285522461,
-        "y": 816.8833618164062,
+        "x": 949.88330078125,
+        "y": 1024.88330078125,
         "wires": []
     },
     {
@@ -1900,8 +1900,8 @@
         "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[5] + \" kn\";\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1203.883285522461,
-        "y": 848.4833374023438,
+        "x": 693.88330078125,
+        "y": 1056.4832763671875,
         "wires": [
             [
                 "c51e54a0.08597"
@@ -1920,8 +1920,8 @@
         "label": "SOG (kn)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1419.883285522461,
-        "y": 849.4833679199219,
+        "x": 909.88330078125,
+        "y": 1057.4833068847656,
         "wires": []
     },
     {
@@ -1932,8 +1932,8 @@
         "func": "\"use strict\"\n\nvar NumEntries,i,j;\n\nvar TDValues = [];\n\nNumEntries = (msg.Satz.length - 2)/4;\n\nTDValues[0] = [msg.Satz[8],  msg.Satz[5],  msg.Satz[6],  msg.Satz[7]];\nTDValues[1] = [msg.Satz[4],  msg.Satz[1],  msg.Satz[2],  msg.Satz[3]];\nTDValues[2] = [msg.Satz[16], msg.Satz[13], msg.Satz[14], msg.Satz[15]];\nTDValues[3] = [msg.Satz[20], msg.Satz[17], msg.Satz[18], msg.Satz[19]];\nTDValues[4] = [msg.Satz[12], msg.Satz[9],  msg.Satz[10], msg.Satz[11]];\n\n\n/*\nfor ( i = 1; i <= NumEntries; i++)\n{\n    j = (i-1)*4+1;\n    TDValues[i] = [msg.Satz[j+3],msg.Satz[j+0],msg.Satz[j+1],msg.Satz[j+2]];\n}\n*/\n\nmsg.payload = TDValues;\n\nreturn msg;\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1225.766586303711,
-        "y": 927.3334045410156,
+        "x": 702.7666015625,
+        "y": 1174.3333435058594,
         "wires": [
             [
                 "256561c.b86a09e"
@@ -1955,8 +1955,8 @@
         "trim": false,
         "base64": false,
         "tls": "",
-        "x": 150,
-        "y": 400,
+        "x": 120,
+        "y": 140,
         "wires": [
             [
                 "52228ddc.131534"
@@ -1976,8 +1976,8 @@
         "storeOutMessages": false,
         "fwdInMessages": true,
         "templateScope": "local",
-        "x": 1448.999984741211,
-        "y": 926.0000305175781,
+        "x": 926,
+        "y": 1172.9999694824219,
         "wires": [
             []
         ]
@@ -1986,10 +1986,10 @@
         "id": "3e5a796a.70c10e",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$IIXDR",
+        "name": "XDR",
         "info": "",
-        "x": 1050,
-        "y": 900,
+        "x": 530,
+        "y": 1180,
         "wires": []
     },
     {
@@ -2003,8 +2003,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1245.800033569336,
-        "y": 963.2833862304688,
+        "x": 722.800048828125,
+        "y": 1210.2833251953125,
         "wires": [
             [
                 "5ec2cf7a.f04bd",
@@ -2024,8 +2024,8 @@
         "label": "Depth (feet)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1454.8000946044922,
-        "y": 963.2834167480469,
+        "x": 931.8001098632812,
+        "y": 1210.2833557128906,
         "wires": []
     },
     {
@@ -2036,8 +2036,8 @@
         "func": " // $SDDBT\n // convert and format depth\n \n        msg.payload = msg.Satz[3] + 'm ';\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1246.800033569336,
-        "y": 995.2833862304688,
+        "x": 723.800048828125,
+        "y": 1242.2833251953125,
         "wires": [
             [
                 "a2b77259.a29848"
@@ -2056,8 +2056,8 @@
         "label": "Depth (meter)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1455.8000946044922,
-        "y": 995.2834167480469,
+        "x": 932.8001098632812,
+        "y": 1242.2833557128906,
         "wires": []
     },
     {
@@ -2068,8 +2068,8 @@
         "func": " // $SDDBT\n // convert and format depth\n \n        msg.payload = msg.Satz[5] + 'fth';\n        return msg;\n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1256.800033569336,
-        "y": 1026.2833862304688,
+        "x": 733.800048828125,
+        "y": 1273.2833251953125,
         "wires": [
             [
                 "bcd53fe.5db604"
@@ -2088,18 +2088,18 @@
         "label": "Depth (fathoms)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1465.8000946044922,
-        "y": 1026.2833862304688,
+        "x": 942.8001098632812,
+        "y": 1273.2833251953125,
         "wires": []
     },
     {
         "id": "414ae62b.0e8c3",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDDBT",
+        "name": "DBT",
         "info": "",
-        "x": 1050,
-        "y": 960,
+        "x": 520,
+        "y": 1240,
         "wires": []
     },
     {
@@ -2113,8 +2113,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1242.749984741211,
-        "y": 1093.7500610351562,
+        "x": 719.75,
+        "y": 1340.75,
         "wires": [
             [
                 "fae3ff25.7351f8"
@@ -2133,18 +2133,18 @@
         "label": "Depth of Water",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1545.749984741211,
-        "y": 1093.7500610351562,
+        "x": 1022.75,
+        "y": 1340.75,
         "wires": []
     },
     {
         "id": "561f9b31.2f2824",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDDPT",
+        "name": "DPT",
         "info": "",
-        "x": 1010.7499847412109,
-        "y": 1034.7500610351562,
+        "x": 520,
+        "y": 1320,
         "wires": []
     },
     {
@@ -2155,8 +2155,8 @@
         "func": "/* convert and format VHW velocity, heading through water\n*  Sentence:\n        Degrees True\n        'T'\n        Degrees Magnetic\n        'M'\n        knots, speed relative to the water\n        'K'\n        kilometers, speed relative to water\n        'K'\n*/\n  \n        var Vhw = new Object();\n        \n        Vhw.tHdg = msg.Satz[1] + '°' + msg.Satz[2];\n        Vhw.mHdg = msg.Satz[3] + '°' +  msg.Satz[4];\n        Vhw.knSpd= msg.Satz[5] + '°' + 'kn';\n        Vhw.kmSpd= msg.Satz[7] + '°' +  'km';\n    \n        return [Vhw];\n        ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1264.749984741211,
-        "y": 1278.7500610351562,
+        "x": 741.75,
+        "y": 1525.75,
         "wires": [
             [
                 "f46d6eb6.039798",
@@ -2178,8 +2178,8 @@
         "label": "HDG (true)",
         "format": "{{msg.tHdg}}",
         "layout": "row-spread",
-        "x": 1535.749984741211,
-        "y": 1275.7500610351562,
+        "x": 1012.75,
+        "y": 1522.75,
         "wires": []
     },
     {
@@ -2194,8 +2194,8 @@
         "label": "HDG (mag)",
         "format": "{{msg.mHdg}}",
         "layout": "row-spread",
-        "x": 1535.749984741211,
-        "y": 1308.7500610351562,
+        "x": 1012.75,
+        "y": 1555.75,
         "wires": []
     },
     {
@@ -2210,8 +2210,8 @@
         "label": "Speed trough Water (kn)",
         "format": "{{msg.knSpd}}",
         "layout": "row-spread",
-        "x": 1576.749984741211,
-        "y": 1339.7500610351562,
+        "x": 1053.75,
+        "y": 1586.75,
         "wires": []
     },
     {
@@ -2222,8 +2222,8 @@
         "func": "/*\nUnclear why some sentences other than \"MTW\"\nare in this channel. Kill them.\n*/\n\nif ( msg.Satz[0] !== '$SDMTW')\n    msg = null;\nelse \n    msg.payload = msg.Satz[1] + '°' + msg.Satz[2];\n        \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1234.999984741211,
-        "y": 1231.0000610351562,
+        "x": 712,
+        "y": 1478,
         "wires": [
             [
                 "659f8368.6cadcc"
@@ -2242,8 +2242,8 @@
         "label": "Water temp.",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1538.066635131836,
-        "y": 1236.6834106445312,
+        "x": 1015.066650390625,
+        "y": 1483.683349609375,
         "wires": []
     },
     {
@@ -2258,8 +2258,8 @@
         "label": "Speed trough Water (km)",
         "format": "{{msg.kmSpd}}",
         "layout": "row-spread",
-        "x": 1577.883285522461,
-        "y": 1372.8833618164062,
+        "x": 1054.88330078125,
+        "y": 1619.88330078125,
         "wires": []
     },
     {
@@ -2270,8 +2270,8 @@
         "func": "/* $SDVLW\n   Distance Traveled through Water\n\nDisclaimer: VLW is not conistently documented.\nMost docs describe only two values \n - \"Total cumulative distance\"\n - \"distance since Reset\" \n plus units each.\n I found this:\n \n$--VLW,x.x,N,x.x,N,x.x,N,x.x,N*hh<CR><LF>\n    $--: Talker identifier*\n    VLW: Sentence formatter*\n    x.x,N: Total cumulative water distance, nautical miles*\n    x.x,N: Water distance since reset, nautical miles*\n    x.x,N: Total cumulative ground distance, nautical miles*\n    x.x,N: Ground distance since reset, nautical miles*\n    *hh: Checksum*\n\n */\n\n        var Vlw = {}; \n     \n        Vlw.ToWD = msg.Satz[1] + ' nm';\n        Vlw.TrWD = msg.Satz[3] + ' nm';\n        Vlw.ToGD = msg.Satz[5] + ' nm';\n        Vlw.TrGD = msg.Satz[7] + ' nm';\n    \n        return [Vlw];\n        \n ",
         "outputs": 1,
         "noerr": 0,
-        "x": 1263.883285522461,
-        "y": 1417.4835205078125,
+        "x": 740.88330078125,
+        "y": 1664.4834594726562,
         "wires": [
             [
                 "5459597e.30b578",
@@ -2293,8 +2293,8 @@
         "label": "Total water dist.",
         "format": "{{msg.ToWD}}",
         "layout": "row-spread",
-        "x": 1563.883285522461,
-        "y": 1421.4835205078125,
+        "x": 1040.88330078125,
+        "y": 1668.4834594726562,
         "wires": []
     },
     {
@@ -2309,8 +2309,8 @@
         "label": "Trip ground Dist.",
         "format": "{{msg.TrGD}}",
         "layout": "row-spread",
-        "x": 1578.5333099365234,
-        "y": 1517.083251953125,
+        "x": 1055.5333251953125,
+        "y": 1764.0831909179688,
         "wires": []
     },
     {
@@ -2325,8 +2325,8 @@
         "label": "Total Ground Dist.",
         "format": "{{msg.ToGD}}",
         "layout": "row-spread",
-        "x": 1576.5333099365234,
-        "y": 1484.083251953125,
+        "x": 1053.5333251953125,
+        "y": 1731.0831909179688,
         "wires": []
     },
     {
@@ -2341,8 +2341,8 @@
         "label": "Trip water dist.",
         "format": "{{msg.TrWD}}",
         "layout": "row-spread",
-        "x": 1566.5333099365234,
-        "y": 1452.0833129882812,
+        "x": 1043.5333251953125,
+        "y": 1699.083251953125,
         "wires": []
     },
     {
@@ -2357,8 +2357,8 @@
         "label": "XTE",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1411.749984741211,
-        "y": 317.75006103515625,
+        "x": 901.75,
+        "y": 525.75,
         "wires": []
     },
     {
@@ -2373,8 +2373,8 @@
         "label": "Steer",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1413.749984741211,
-        "y": 351.75006103515625,
+        "x": 903.75,
+        "y": 559.75,
         "wires": []
     },
     {
@@ -2389,8 +2389,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 700,
+        "x": 1140.000015258789,
+        "y": 907.9999389648438,
         "wires": [
             []
         ]
@@ -2407,8 +2407,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 760,
+        "x": 1140.000015258789,
+        "y": 967.9999389648438,
         "wires": [
             []
         ]
@@ -2425,8 +2425,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 460,
+        "x": 1140.000015258789,
+        "y": 667.9999389648438,
         "wires": [
             []
         ]
@@ -2443,8 +2443,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 520,
+        "x": 1140.000015258789,
+        "y": 727.9999389648438,
         "wires": [
             []
         ]
@@ -2461,8 +2461,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 960,
+        "x": 1127.000015258789,
+        "y": 1206.9999389648438,
         "wires": [
             []
         ]
@@ -2480,8 +2480,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 260,
-        "y": 920,
+        "x": 150,
+        "y": 720,
         "wires": []
     },
     {
@@ -2496,8 +2496,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1660,
-        "y": 120,
+        "x": 1150.000015258789,
+        "y": 327.99993896484375,
         "wires": [
             []
         ]
@@ -2514,8 +2514,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1670,
-        "y": 180,
+        "x": 1160.000015258789,
+        "y": 387.99993896484375,
         "wires": [
             []
         ]
@@ -2532,8 +2532,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1670,
-        "y": 240,
+        "x": 1160.000015258789,
+        "y": 447.99993896484375,
         "wires": [
             []
         ]
@@ -2549,8 +2549,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1210,
-        "y": 1760,
+        "x": 670,
+        "y": 1960,
         "wires": [
             [
                 "f6c2c9f352d77da5",
@@ -2571,8 +2571,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1449.0000610351562,
-        "y": 1760.0000305175781,
+        "x": 909.0000610351562,
+        "y": 1960.0000305175781,
         "wires": []
     },
     {
@@ -2587,8 +2587,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 1760,
+        "x": 1110,
+        "y": 1940,
         "wires": [
             []
         ]
@@ -2597,10 +2597,10 @@
         "id": "b6c7c58f9a532823",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$IIVWR",
+        "name": "VWR",
         "info": "Wind Speed and Direction",
-        "x": 1090,
-        "y": 1660,
+        "x": 510,
+        "y": 1920,
         "wires": []
     },
     {
@@ -2614,8 +2614,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1210,
-        "y": 1700,
+        "x": 670,
+        "y": 1920,
         "wires": [
             [
                 "b51a1286c1342a42",
@@ -2636,8 +2636,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1449.0000610351562,
-        "y": 1700.0000305175781,
+        "x": 909.0000610351562,
+        "y": 1920.0000305175781,
         "wires": []
     },
     {
@@ -2652,8 +2652,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 1700,
+        "x": 1110,
+        "y": 1880,
         "wires": [
             []
         ]
@@ -2662,30 +2662,30 @@
         "id": "99d9d8b2d2cf46b1",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDMTW",
+        "name": "MTW",
         "info": "",
-        "x": 1100,
-        "y": 1180,
+        "x": 530,
+        "y": 1440,
         "wires": []
     },
     {
         "id": "defaff6737133d0c",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDVHW",
+        "name": "VHW",
         "info": "",
-        "x": 1060,
-        "y": 1240,
+        "x": 530,
+        "y": 1520,
         "wires": []
     },
     {
         "id": "d814c5d7db1a239f",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$SDVLW",
+        "name": "VLW",
         "info": "",
-        "x": 1040,
-        "y": 1320,
+        "x": 530,
+        "y": 1620,
         "wires": []
     },
     {
@@ -2699,8 +2699,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1210,
-        "y": 1820,
+        "x": 670,
+        "y": 2000,
         "wires": [
             [
                 "0991e968bb37877c",
@@ -2721,8 +2721,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1449.0000610351562,
-        "y": 1820.0000305175781,
+        "x": 909.0000610351562,
+        "y": 2000.0000305175781,
         "wires": []
     },
     {
@@ -2737,8 +2737,8 @@
         "attributes": [],
         "inputOverride": "allow",
         "outputProperties": [],
-        "x": 1650,
-        "y": 1820,
+        "x": 1110,
+        "y": 2000,
         "wires": [
             []
         ]
@@ -2747,10 +2747,10 @@
         "id": "4c443376f299de65",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$RARSA",
+        "name": "RSA",
         "info": "Rudder Angle",
-        "x": 1080,
-        "y": 1800,
+        "x": 490,
+        "y": 2000,
         "wires": []
     },
     {
@@ -2764,8 +2764,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1210,
-        "y": 1640,
+        "x": 670,
+        "y": 1880,
         "wires": [
             [
                 "b184abd7a21e46e7"
@@ -2785,18 +2785,18 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1449.0000610351562,
-        "y": 1640.0000305175781,
+        "x": 909.0000610351562,
+        "y": 1880.0000305175781,
         "wires": []
     },
     {
         "id": "1de9fd753557c5a9",
         "type": "comment",
         "z": "c4bfeb15a0b5facf",
-        "name": "$IIMWV",
+        "name": "MWV",
         "info": "Wind Speed and Direction",
-        "x": 1090,
-        "y": 1560,
+        "x": 510,
+        "y": 1840,
         "wires": []
     },
     {
@@ -2810,8 +2810,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1210,
-        "y": 1580,
+        "x": 670,
+        "y": 1840,
         "wires": [
             [
                 "ea870161930244d6"
@@ -2831,8 +2831,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1449.0000610351562,
-        "y": 1580.0000305175781,
+        "x": 909.0000610351562,
+        "y": 1840.0000305175781,
         "wires": []
     }
 ]
