@@ -709,12 +709,10 @@
         "trim": false,
         "base64": false,
         "tls": "",
-        "x": 120,
-        "y": 140,
+        "x": 130,
+        "y": 40,
         "wires": [
-            [
-                "52228ddc.131534"
-            ]
+            []
         ]
     },
     {
@@ -794,7 +792,7 @@
         "type": "function",
         "z": "c4bfeb15a0b5facf",
         "name": "Depth of Water",
-        "func": "// $SDDPT\n// convert and format depth in ft\n// \n\nmsg.payload = (Number(msg.Satz[1]) + Number(msg.Satz[2])) * 3.28084;\nreturn msg;\n",
+        "func": "// $SDDPT\n// convert and format depth in ft\n// \n\nmsg.payload = (Number(msg.Satz[1]) + Number(msg.Satz[2])) * 3.28;\nreturn msg;\n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -961,7 +959,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 200,
+        "x": 120,
         "y": 640,
         "wires": []
     },
@@ -2252,6 +2250,29 @@
         "y": 1480,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "383ac9009d7e6a39",
+        "type": "tcp in",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Get NMEA from YDWG",
+        "server": "client",
+        "host": "192.168.8.20",
+        "port": "1456",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "52228ddc.131534"
+            ]
         ]
     },
     {
