@@ -1,22 +1,3249 @@
 [
     {
-        "id": "58100cac738057ba",
+        "id": "c4bfeb15a0b5facf",
+        "type": "tab",
+        "label": "NMEA",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "52228ddc.131534",
         "type": "function",
         "z": "c4bfeb15a0b5facf",
-        "name": "decimal LAT",
-        "func": "// @ts-nocheck\n //convert and format decimal latitude\n \nvar dd = ~~(msg.Satz[3] / 100);\nvar ss = msg.Satz[3] - dd * 100;\nvar declatlng = dd + ss / 60;\n\n\nif (msg.Satz[4] == \"W\" || msg.Satz[4] == \"S\") {\n       msg.payload = (-1 * declatlng).toFixed(4);\n} else {\n       msg.payload = declatlng.toFixed(4);\n}\n   \nreturn [msg];",
+        "name": "NMEA: main filter",
+        "func": "/* \n   Filter NMEA sentences by protocol header.\n   Examples: https://docs.arduino.cc/learn/communication/gps-nmea-data-101\n   Exzmple: $GPGGA,181908.00,3404.7041778,N,07044.3966270,W,4,13,1.00,495.144,M,29.200,M,0.10,0000,*40\n\n   The last three characters of the first field ($--???) define the protocol header.\n   Known protocol headers:\n   AAM, APB, BOD, GGA, GLC, GLL, \n   GSA, GSV, RMB, RMC, VTG, XTE, \n   ZDA, XDR, DBT, DPT, HDG, MTW, \n   VHW, VLW, MWD, MWV, VWR, RSA\n   \n   This node returns an array. The position of the msg in the array determines which output receives the msg.\n   The bottom (last) output received all msgs.\n   \n   To add support for additional sentences, the return array must be expanded for all cases and the node outputs increased on the setup tab.\n   \n*/\nvar messagetype;\n\n// The last field is separated by an asterix. Replace it by a comma to let work string.split() properly.\nmsg.Satz = msg.payload.replace(\"*\", \",@\");\n\n//split the sentence into an array by commas\nmsg.Satz = msg.Satz.split(\",\");\n\n// The last three characters of the first field ($--???) define the protocol header and which output of the node\nmessagetype = msg.Satz[0].slice(-3);\n\nswitch (messagetype) {\n    case 'AAM': return [\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'APB': return [\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'BOD': return [\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GGA': return [\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLC': return [\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GLL': return [\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSA': return [\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'GSV': return [\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMB': return [\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'RMC': return [\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'VTG': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XTE': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'ZDA': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'XDR': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DBT': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, null,\n        null, null, null, null, msg];\n    case 'DPT': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, null,\n        null, null, null, null, msg];\n    case 'HDG': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, null,\n        null, null, null, null, msg];\n    case 'MTW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, null,\n        null, null, null, null, msg];\n    case 'VHW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, null,\n        null, null, null, null, msg];\n    case 'VLW': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, msg,\n        null, null, null, null, msg];\n    case 'MWD': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        msg, null, null, null, msg];\n    case 'MWV': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, msg, null, null, msg];\n    case 'VWR': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, msg, null, msg];\n    case 'RSA': return [\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, null, null,\n        null, null, null, msg, msg];\n    case 'RPM': return null;\n    case 'VDO': return null;\n    default: return null;\n}\n",
+        "outputs": 25,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [],
+            [
+                "2e56675e.213948",
+                "5253f12f.9c5218",
+                "2d745c90.f289d4",
+                "ebfbb77f.322348",
+                "71056213.0948d4",
+                "b0241d9e.b8787",
+                "e9650e7c.b6d4e8",
+                "72709359.a9442c"
+            ],
+            [],
+            [
+                "383c8f63.862828",
+                "790afbd7.3654ec",
+                "ea51a00a.bdc058",
+                "2d9a8d4.ca16072",
+                "280c7f71.9397d"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [
+                "d226219c.7afe7",
+                "fe71afe3.a3853",
+                "e10f8eca.77985",
+                "6beb0a5.8ca2674",
+                "518ee0be.1270a8",
+                "9dd9f599.4fc9b",
+                "c9f48ea5.bbc318",
+                "c3a5f175.8c11e8",
+                "c1cc9a22.1cbdb",
+                "596a9de6.3d287c"
+            ],
+            [
+                "73441ae9.b40a4c",
+                "6bdcb3fd.49daa4",
+                "6e89ec4b.4597bc",
+                "3403daf.c2cb226",
+                "58100cac738057ba",
+                "f76bd83ed443112c"
+            ],
+            [
+                "2130a8aa.64d14",
+                "b6806f11.d449b8",
+                "89cf9c1d.dd772"
+            ],
+            [],
+            [],
+            [
+                "2d45a331.50e0ec"
+            ],
+            [
+                "2a55966b.9a9ae2",
+                "3f5e9d86.994432",
+                "a24c1e8e.8ca888"
+            ],
+            [
+                "3477d8db.5a6e48"
+            ],
+            [
+                "bddd33ed.693d88"
+            ],
+            [
+                "146651da.31421e"
+            ],
+            [
+                "f57075d8.2c12c8"
+            ],
+            [
+                "bb3c46cc.6266c"
+            ],
+            [],
+            [
+                "c268a97fea8cf91f",
+                "aa232623728deab6"
+            ],
+            [
+                "99ce38a14c770a8a",
+                "fe312ce6da53ef24"
+            ],
+            [
+                "c620ddd4f39f0b29"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "73441ae9.b40a4c",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format LAT",
+        "func": " //convert and format latitude\n \n        var value_in = msg.Satz[3];\n    \n        msg.payload = value_in.substr(0,2) + '°' + ' ' + value_in.substr(2,5) + \"' \" + msg.Satz[4];\n     \n        return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 725,
+        "y": 860,
+        "wires": [
+            [
+                "343f79b.abaa206",
+                "1b620e7aa964c035"
+            ]
+        ]
+    },
+    {
+        "id": "6bdcb3fd.49daa4",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format LON",
+        "func": "// convert and format longitude\n\n  var value_in = msg.Satz[5];\n        \n  msg.payload = value_in.substr(0,3) + '°' + ' ' + value_in.substr(3,5) + \"' \" + msg.Satz[6];\n  \n  return msg;\n ",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
+        "x": 736,
+        "y": 892,
+        "wires": [
+            [
+                "c7396282.341eb8",
+                "11bcde88b3734685"
+            ]
+        ]
+    },
+    {
+        "id": "6e89ec4b.4597bc",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format SOG",
+        "func": "// convert and format Speed over ground\n\n  var value_in = msg.Satz[7];\n        \n  msg.payload = value_in; // + ' kn';\n  \n  return  msg;\n  \n        ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 736,
+        "y": 923,
+        "wires": [
+            [
+                "4450ef39.b653e",
+                "4d476aef0bb45ca9"
+            ]
+        ]
+    },
+    {
+        "id": "3403daf.c2cb226",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format COG",
+        "func": "// convert and format course over ground\n\n  var value_in = msg.Satz[8];\n        \n  msg.payload = value_in; //+ ' °';\n  \n  return  msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 735,
+        "y": 955,
+        "wires": [
+            [
+                "fa638f24.5d0808",
+                "d905719b18ed91bb"
+            ]
+        ]
+    },
+    {
+        "id": "692fcbb1.b40c74",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "RMC",
+        "info": "Recommended Minimum Navigation Information",
+        "x": 550,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "bddd33ed.693d88",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format HDG",
+        "func": "/* convert and format heading\n*  Sentence:\n        magnetic sensor heading, degrees\n        magnetic deviation, degrees\n        magnetic deviation direction, E/W\n        magnetic variation, degrees\n        magnetic variation direction, E/W\n*/\n        var Hdg = new Object();\n        \n        Hdg.hdg = msg.Satz[1] + '°';\n        Hdg.dev = msg.Satz[2] + '°' +  msg.Satz[3];\n        Hdg.Decl= msg.Satz[4] + '°' + msg.Satz[5];\n    \n        return [Hdg];\n        ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 740,
+        "y": 1380,
+        "wires": [
+            [
+                "1d8bab1a.9d13e5",
+                "f473f957.1e34b8",
+                "4504c710.d06e38"
+            ]
+        ]
+    },
+    {
+        "id": "fa983ec4.b85ed8",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "HDG",
+        "info": "Heading - Deviation & Variation",
+        "x": 530,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "2e56675e.213948",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format XTE",
+        "func": " //convert and format Cross Track Error\n \n \n        var value_in = msg.Satz[5];\n        \n        if ( value_in == \"N\")\n        {\n            msg.payload = msg.Satz[3] + \" nm\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[3] + \" km\";\n            \n        }\n            \n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
         "x": 710,
-        "y": 1100,
+        "y": 40,
+        "wires": [
+            [
+                "d52ea071.229ad8"
+            ]
+        ]
+    },
+    {
+        "id": "5253f12f.9c5218",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Steer",
+        "func": " //convert and format \"Steer R or L\"\n \n        msg.payload = msg.Satz[4] ;\n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670.11669921875,
+        "y": 70.94999694824219,
+        "wires": [
+            [
+                "a4f2dc52.debdd"
+            ]
+        ]
+    },
+    {
+        "id": "2d745c90.f289d4",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Arrival circle entered",
+        "func": " //convert and format \"Arrival circle entered\"\n \n    msg.payload = msg.Satz[6];\n  \n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720.11669921875,
+        "y": 102.94999694824219,
+        "wires": [
+            [
+                "e049a21d.1d73c8"
+            ]
+        ]
+    },
+    {
+        "id": "ebfbb77f.322348",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "WP perpendicular",
+        "func": " //convert and format \"Perpendicular passed at waypoint \"\n \n    msg.payload = msg.Satz[7];\n  \n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 711.11669921875,
+        "y": 135.9499969482422,
+        "wires": [
+            [
+                "1e65347c.887b0c"
+            ]
+        ]
+    },
+    {
+        "id": "71056213.0948d4",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Bearing O2D",
+        "func": " //convert and format \"Bearing origin to destination\"\n \n \n        var value_in = msg.Satz[9];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[8] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[8] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690.11669921875,
+        "y": 166.9499969482422,
+        "wires": [
+            [
+                "17ca4c63.a92b14"
+            ]
+        ]
+    },
+    {
+        "id": "b0241d9e.b8787",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Dest. WP",
+        "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[10];\n  \n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 681.11669921875,
+        "y": 198.9499969482422,
+        "wires": [
+            [
+                "c6dfa630.f6988"
+            ]
+        ]
+    },
+    {
+        "id": "e9650e7c.b6d4e8",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Bearing Pos2D",
+        "func": " //convert and format \"Bearing position to destination\"\n \n \n        var value_in = msg.Satz[12];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[11] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[11] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 701.11669921875,
+        "y": 230.9499969482422,
+        "wires": [
+            [
+                "fb3e99ba.531b38"
+            ]
+        ]
+    },
+    {
+        "id": "cf394344.555e28",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "ABP",
+        "info": "Autopilot Sentence \"B\"",
+        "x": 520,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "72709359.a9442c",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "HDG Pos2D",
+        "func": " //convert and format \"Heading position to destination\"\n \n        var value_in = msg.Satz[14];\n        \n        \n        \n        if ( value_in == \"M\")\n        {\n            msg.payload = msg.Satz[13] + \" mag\";\n        }\n        else\n        {\n           msg.payload = msg.Satz[13] + \" true\";\n            \n        }\n            \n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 692.11669921875,
+        "y": 263.9499969482422,
+        "wires": [
+            [
+                "48b816e5.5c08f8"
+            ]
+        ]
+    },
+    {
+        "id": "383c8f63.862828",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format UTC",
+        "func": " //convert and format \"UTC\"\n // Sentence GGA\n \n        var value_in = msg.Satz[1];\n    \n        msg.payload = value_in.substr(0,2) + ':' + value_in.substr(2,2) + \":\" + value_in.substr(4,2);\n     \n        return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 710,
+        "y": 363,
+        "wires": [
+            [
+                "1ed95404.1211fc",
+                "eaa184832f406914"
+            ]
+        ]
+    },
+    {
+        "id": "790afbd7.3654ec",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "GPS quality",
+        "func": "//convert and format \"GPS quality\"\n // Sentence GGA\n \nvar GPS_Q;\nGPS_Q = msg.Satz[6];\n\nswitch(GPS_Q){\n    case '0': msg.payload = \"GPS fix not valid\";\n              break;\n    case '1': msg.payload = \"GPS fix\";\n              break;\n    case '2': msg.payload = \"Differential GPS fix\";\n}\n    return msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 691,
+        "y": 392,
+        "wires": [
+            [
+                "55ced550.baf934",
+                "6942ec31cde0ccab"
+            ]
+        ]
+    },
+    {
+        "id": "ea51a00a.bdc058",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "# of sat",
+        "func": " //convert and format \"number of satellites\"\n // Sentence GGA\n \n        msg.payload = msg.Satz[7];\n        return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 681,
+        "y": 424,
+        "wires": [
+            [
+                "3e3bd906.6da186",
+                "7d41dce6411c8a73"
+            ]
+        ]
+    },
+    {
+        "id": "ba9301fb.df0bf",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "GGA",
+        "info": "Global Positioning System Fix Data, \nTime, Position and fix related data \nfor a GPS receiver.",
+        "x": 530,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "2d9a8d4.ca16072",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "HDOP",
+        "func": "//convert and format \"HDOP\"\n// Horizontal Dilution of precision\n// Sentence GGA\n\n\n msg.payload = msg.Satz[8];\n return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 673,
+        "y": 455,
+        "wires": [
+            [
+                "532123d8.be750c"
+            ]
+        ]
+    },
+    {
+        "id": "280c7f71.9397d",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Antenna Alt.",
+        "func": "//convert and format \"antenna altitude\"\n// Sentence GGA\n// Antenna Altitude above/below mean-sea-level (geoid)\n\n msg.payload = msg.Satz[9];\n return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 693.7666320800781,
+        "y": 487.1666564941406,
+        "wires": [
+            [
+                "c9ddc138.379ae8"
+            ]
+        ]
+    },
+    {
+        "id": "596a9de6.3d287c",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format XTE",
+        "func": " //convert and format Cross Track Error\n \n \n       \n    msg.payload = msg.Satz[2] + \" nm\";\n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 725.88330078125,
+        "y": 526.8833312988281,
+        "wires": [
+            [
+                "2446ca21.7fa01e"
+            ]
+        ]
+    },
+    {
+        "id": "26ba8e99.84094a",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "RMB",
+        "info": "",
+        "x": 530,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "c1cc9a22.1cbdb",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Steer",
+        "func": " //convert and format \"Steer R or L\"\n \n        msg.payload = msg.Satz[3] ;\n        \n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 676.88330078125,
+        "y": 558.8833312988281,
+        "wires": [
+            [
+                "ab3368d0.5a222"
+            ]
+        ]
+    },
+    {
+        "id": "d226219c.7afe7",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "To WP",
+        "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[5];\n  \n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 677.88330078125,
+        "y": 624.88330078125,
+        "wires": [
+            [
+                "1fc82d5e.c28973"
+            ]
+        ]
+    },
+    {
+        "id": "fe71afe3.a3853",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "From WP",
+        "func": " //convert and format \"Desitiantion way point\"\n \n    msg.payload = msg.Satz[4];\n  \n    return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 685.88330078125,
+        "y": 591.88330078125,
+        "wires": [
+            [
+                "31aa5072.e3807"
+            ]
+        ]
+    },
+    {
+        "id": "e10f8eca.77985",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Dest. WP LAT",
+        "func": " //convert and format latitude\n \n        var value_in = msg.Satz[6];\n    \n        msg.payload = value_in.substr(0,2) + '°' + ' ' + value_in.substr(2,5) + \"' \" + msg.Satz[7];\n     \n        return [msg];\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 707,
+        "y": 657,
+        "wires": [
+            [
+                "b94ff398.d4114"
+            ]
+        ]
+    },
+    {
+        "id": "6beb0a5.8ca2674",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Dest. WP LON",
+        "func": "// convert and format longitude\n\n  var value_in = msg.Satz[8];\n        \n  msg.payload = value_in.substr(0,3) + '°' + ' ' + value_in.substr(3,5) + \"' \" + msg.Satz[9];\n  \n  return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 710,
+        "y": 689,
+        "wires": [
+            [
+                "7ad3724f.4bf6bc"
+            ]
+        ]
+    },
+    {
+        "id": "518ee0be.1270a8",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Range to Dest.",
+        "func": "// convert and format longitude\n\nmsg.payload = msg.Satz[10] + ' nm' ;\n  \nreturn msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 710.75,
+        "y": 721.75,
+        "wires": [
+            [
+                "ce0b29a9.5ee6c"
+            ]
+        ]
+    },
+    {
+        "id": "9dd9f599.4fc9b",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "BRG to Dest.",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[11]\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 701,
+        "y": 753,
+        "wires": [
+            [
+                "b9230e9d.e7a31"
+            ]
+        ]
+    },
+    {
+        "id": "c9f48ea5.bbc318",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "VMG to Dest.",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[12];\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 712,
+        "y": 785,
+        "wires": [
+            [
+                "21b93ff4.7965f"
+            ]
+        ]
+    },
+    {
+        "id": "c3a5f175.8c11e8",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Arrival Status",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[13];\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 713,
+        "y": 817,
+        "wires": [
+            [
+                "9dd6929a.e86b1"
+            ]
+        ]
+    },
+    {
+        "id": "2130a8aa.64d14",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Track Degrees true",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[1];\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 724.75,
+        "y": 990.75,
+        "wires": [
+            [
+                "73ac04e1.52c2f4"
+            ]
+        ]
+    },
+    {
+        "id": "99439ad8.679d98",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "VTG",
+        "info": "Track made good and ground speed",
+        "x": 550,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "b6806f11.d449b8",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Track Degrees mag",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[3];\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 733.88330078125,
+        "y": 1023.8832702636719,
+        "wires": [
+            [
+                "b4630c19.d0cf8"
+            ]
+        ]
+    },
+    {
+        "id": "89cf9c1d.dd772",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "SOG (kn)",
+        "func": " //convert and format latitude\n \n        msg.payload = msg.Satz[5] + \" kn\";\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 693.88330078125,
+        "y": 1056.4832763671875,
+        "wires": [
+            [
+                "c51e54a0.08597"
+            ]
+        ]
+    },
+    {
+        "id": "2d45a331.50e0ec",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "TransducerData",
+        "func": "\"use strict\"\n\nvar NumEntries,i,j;\n\nvar TDValues = [];\n\nNumEntries = (msg.Satz.length - 2)/4;\n\nTDValues[0] = [msg.Satz[8],  msg.Satz[5],  msg.Satz[6],  msg.Satz[7]];\nTDValues[1] = [msg.Satz[4],  msg.Satz[1],  msg.Satz[2],  msg.Satz[3]];\nTDValues[2] = [msg.Satz[16], msg.Satz[13], msg.Satz[14], msg.Satz[15]];\nTDValues[3] = [msg.Satz[20], msg.Satz[17], msg.Satz[18], msg.Satz[19]];\nTDValues[4] = [msg.Satz[12], msg.Satz[9],  msg.Satz[10], msg.Satz[11]];\n\n\n/*\nfor ( i = 1; i <= NumEntries; i++)\n{\n    j = (i-1)*4+1;\n    TDValues[i] = [msg.Satz[j+3],msg.Satz[j+0],msg.Satz[j+1],msg.Satz[j+2]];\n}\n*/\n\nmsg.payload = TDValues;\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 702.7666015625,
+        "y": 1174.3333435058594,
+        "wires": [
+            [
+                "256561c.b86a09e"
+            ]
+        ]
+    },
+    {
+        "id": "b8466a06.c72b58",
+        "type": "tcp in",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Get NMEA from SignalK",
+        "server": "client",
+        "host": "192.168.8.21",
+        "port": "10110",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 130,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3e5a796a.70c10e",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "XDR",
+        "info": "",
+        "x": 530,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "2a55966b.9a9ae2",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "depth b. transd. (feet)",
+        "func": "// $SDDBT\n// convert and format depth\n\nmsg.payload = msg.Satz[1]; // + ' f';\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 722.800048828125,
+        "y": 1210.2833251953125,
+        "wires": [
+            [
+                "5ec2cf7a.f04bd",
+                "52d366c88ff7b336"
+            ]
+        ]
+    },
+    {
+        "id": "3f5e9d86.994432",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "depth b. transd. (meter)",
+        "func": " // $SDDBT\n // convert and format depth\n \n        msg.payload = msg.Satz[3] + 'm ';\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 723.800048828125,
+        "y": 1242.2833251953125,
+        "wires": [
+            [
+                "a2b77259.a29848"
+            ]
+        ]
+    },
+    {
+        "id": "a24c1e8e.8ca888",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "depth b. transd. (fathoms)",
+        "func": " // $SDDBT\n // convert and format depth\n \n        msg.payload = msg.Satz[5] + 'fth';\n        return msg;\n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 733.800048828125,
+        "y": 1273.2833251953125,
+        "wires": [
+            [
+                "bcd53fe.5db604"
+            ]
+        ]
+    },
+    {
+        "id": "414ae62b.0e8c3",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "DBT",
+        "info": "",
+        "x": 520,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "3477d8db.5a6e48",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Depth of Water",
+        "func": "// $SDDPT\n// convert and format depth in ft\n// \n\nmsg.payload = ((Number(msg.Satz[1]) + Number(msg.Satz[2])) * 3.28).toFixed(1);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 719.75,
+        "y": 1340.75,
+        "wires": [
+            [
+                "fae3ff25.7351f8",
+                "d59ebc4221065291"
+            ]
+        ]
+    },
+    {
+        "id": "561f9b31.2f2824",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "DPT",
+        "info": "",
+        "x": 520,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "f57075d8.2c12c8",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "convert+format VHW",
+        "func": "/* convert and format VHW velocity, heading through water\n*  Sentence:\n        Degrees True\n        'T'\n        Degrees Magnetic\n        'M'\n        knots, speed relative to the water\n        'K'\n        kilometers, speed relative to water\n        'K'\n*/\n  \n        var Vhw = new Object();\n        \n        Vhw.tHdg = msg.Satz[1] + '°' + msg.Satz[2];\n        Vhw.mHdg = msg.Satz[3] + '°' +  msg.Satz[4];\n        Vhw.knSpd= msg.Satz[5] + '°' + 'kn';\n        Vhw.kmSpd= msg.Satz[7] + '°' +  'km';\n    \n        return [Vhw];\n        ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 741.75,
+        "y": 1525.75,
+        "wires": [
+            [
+                "f46d6eb6.039798",
+                "309b8dc.9284af2",
+                "a809e211.894bb8",
+                "2db3dd55.24141a"
+            ]
+        ]
+    },
+    {
+        "id": "bb3c46cc.6266c",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Dist.travelled tr. water",
+        "func": "/* $SDVLW\n   Distance Traveled through Water\n\nDisclaimer: VLW is not conistently documented.\nMost docs describe only two values \n - \"Total cumulative distance\"\n - \"distance since Reset\" \n plus units each.\n I found this:\n \n$--VLW,x.x,N,x.x,N,x.x,N,x.x,N*hh<CR><LF>\n    $--: Talker identifier*\n    VLW: Sentence formatter*\n    x.x,N: Total cumulative water distance, nautical miles*\n    x.x,N: Water distance since reset, nautical miles*\n    x.x,N: Total cumulative ground distance, nautical miles*\n    x.x,N: Ground distance since reset, nautical miles*\n    *hh: Checksum*\n\n */\n\n        var Vlw = {}; \n     \n        Vlw.ToWD = msg.Satz[1] + ' nm';\n        Vlw.TrWD = msg.Satz[3] + ' nm';\n        Vlw.ToGD = msg.Satz[5] + ' nm';\n        Vlw.TrGD = msg.Satz[7] + ' nm';\n    \n        return [Vlw];\n        \n ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 740.88330078125,
+        "y": 1664.4834594726562,
+        "wires": [
+            [
+                "5459597e.30b578",
+                "33dc8096.ca6848",
+                "d4852b88.5aa898",
+                "e7b0abb5.80d67"
+            ]
+        ]
+    },
+    {
+        "id": "4d476aef0bb45ca9",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "SOG",
+        "entityConfig": "36538c2b4ee8c5bc",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1140.000015258789,
+        "y": 907.9999389648438,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d905719b18ed91bb",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "COG",
+        "entityConfig": "c4760c4026b9fbb6",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1140.000015258789,
+        "y": 967.9999389648438,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1b620e7aa964c035",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "LAT",
+        "entityConfig": "172c54578c852f2d",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1130,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "11bcde88b3734685",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "LON",
+        "entityConfig": "2482184f4ad2eb67",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1130,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "52d366c88ff7b336",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "DepthBelowTransducer",
+        "entityConfig": "116cf96ee16cb2e3",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1187.000015258789,
+        "y": 1206.9999389648438,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a4606b369a33247e",
+        "type": "debug",
+        "z": "c4bfeb15a0b5facf",
+        "name": "debug1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 120,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "eaa184832f406914",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "GPSTime",
+        "entityConfig": "95237685892bad5f",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1150.000015258789,
+        "y": 327.99993896484375,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6942ec31cde0ccab",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "GPSQuality",
+        "entityConfig": "f7e733d2f1e66d00",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1160.000015258789,
+        "y": 387.99993896484375,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7d41dce6411c8a73",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "GPSSatellites",
+        "entityConfig": "7d1bd98111c9f44c",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1160.000015258789,
+        "y": 447.99993896484375,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "99ce38a14c770a8a",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWS",
+        "func": "// $IIVWR\n\n\nmsg.payload = msg.Satz[3];\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1960,
+        "wires": [
+            [
+                "f6c2c9f352d77da5",
+                "974327eecae6496d"
+            ]
+        ]
+    },
+    {
+        "id": "974327eecae6496d",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWS",
+        "entityConfig": "97b112372f52f973",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1110,
+        "y": 1940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6c7c58f9a532823",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "VWR",
+        "info": "Wind Speed and Direction",
+        "x": 510,
+        "y": 1920,
+        "wires": []
+    },
+    {
+        "id": "fe312ce6da53ef24",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWA",
+        "func": "// $IIVWR\n// Output delivered as 0-360 to work with 'compass card' in HA\n\n//msg.payload = msg.Satz[1] + msg.Satz[2];\n\nif (msg.Satz[2] === 'L') {\n    msg.payload = 360 - msg.Satz[1];\n} else {\n    msg.payload = msg.Satz[1];\n} \nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1920,
+        "wires": [
+            [
+                "b51a1286c1342a42",
+                "65d3a3f084a1f728"
+            ]
+        ]
+    },
+    {
+        "id": "65d3a3f084a1f728",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWA",
+        "entityConfig": "6eae8aaf035d4363",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1110,
+        "y": 1880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "99d9d8b2d2cf46b1",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "MTW",
+        "info": "",
+        "x": 530,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "defaff6737133d0c",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "VHW",
+        "info": "",
+        "x": 530,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "d814c5d7db1a239f",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "VLW",
+        "info": "",
+        "x": 530,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "c620ddd4f39f0b29",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "RSA",
+        "func": "// $IIRSA - Rudder Angle\n\n\nmsg.payload = msg.Satz[1];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2000,
+        "wires": [
+            [
+                "0991e968bb37877c",
+                "6d287c899349698a"
+            ]
+        ]
+    },
+    {
+        "id": "6d287c899349698a",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "RSA",
+        "entityConfig": "dbf74f8a2ccb4664",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1110,
+        "y": 2000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4c443376f299de65",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "RSA",
+        "info": "Rudder Angle",
+        "x": 510,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "aa232623728deab6",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWS",
+        "func": "// $IIMWV\n\n\nmsg.payload = msg.Satz[3];\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1880,
+        "wires": [
+            [
+                "b184abd7a21e46e7"
+            ]
+        ]
+    },
+    {
+        "id": "1de9fd753557c5a9",
+        "type": "comment",
+        "z": "c4bfeb15a0b5facf",
+        "name": "MWV",
+        "info": "Wind Speed and Direction",
+        "x": 510,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "c268a97fea8cf91f",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "AWA",
+        "func": "// $IIMWV\n// Output delivered as 0-360 to work with 'compass card' in HA\n\nif (msg.Satz[2] === 'R') {\n    msg.payload = msg.Satz[1];\n} else {\n    msg.payload = msg.Satz[1];\n} \nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1840,
+        "wires": [
+            [
+                "ea870161930244d6"
+            ]
+        ]
+    },
+    {
+        "id": "343f79b.abaa206",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "b0652885.6c6d8",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "name": "LAT",
+        "label": "LAT",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 910,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "c7396282.341eb8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "b0652885.6c6d8",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "LON",
+        "label": "LON",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 910,
+        "y": 892,
+        "wires": []
+    },
+    {
+        "id": "1d8bab1a.9d13e5",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "MgK",
+        "format": "{{msg.hdg}}",
+        "layout": "row-spread",
+        "x": 994,
+        "y": 1379,
+        "wires": []
+    },
+    {
+        "id": "f473f957.1e34b8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "MW",
+        "format": "{{msg.Decl}}",
+        "layout": "row-spread",
+        "x": 994,
+        "y": 1412,
+        "wires": []
+    },
+    {
+        "id": "4504c710.d06e38",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "ABL",
+        "format": "{{msg.dev}}",
+        "layout": "row-spread",
+        "x": 995,
+        "y": 1443,
+        "wires": []
+    },
+    {
+        "id": "d52ea071.229ad8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "XTE",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 897,
+        "y": 40.05000305175781,
+        "wires": []
+    },
+    {
+        "id": "a4f2dc52.debdd",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Steer",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 898.11669921875,
+        "y": 70.94999694824219,
+        "wires": []
+    },
+    {
+        "id": "e049a21d.1d73c8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Arrival Circle entered",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 950,
+        "y": 103.05000305175781,
+        "wires": []
+    },
+    {
+        "id": "1e65347c.887b0c",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "WP perpendicular",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 939.11669921875,
+        "y": 134.9499969482422,
+        "wires": []
+    },
+    {
+        "id": "17ca4c63.a92b14",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Bearing Org to Dest",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 952,
+        "y": 167.0500030517578,
+        "wires": []
+    },
+    {
+        "id": "c6dfa630.f6988",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Destination Waypoint",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 951.11669921875,
+        "y": 196.9499969482422,
+        "wires": []
+    },
+    {
+        "id": "fb3e99ba.531b38",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Bearing Pos to Dest",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 952.11669921875,
+        "y": 228.9499969482422,
+        "wires": []
+    },
+    {
+        "id": "48b816e5.5c08f8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "e9660793.9419",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Heading Pos to Dest",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 952.11669921875,
+        "y": 262.9499969482422,
+        "wires": []
+    },
+    {
+        "id": "1ed95404.1211fc",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "604ac05d.2accd8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "UTC",
+        "label": "UTC",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 898,
+        "y": 363,
+        "wires": []
+    },
+    {
+        "id": "55ced550.baf934",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "604ac05d.2accd8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "GPS quality",
+        "label": "GPS quality",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 919,
+        "y": 393,
+        "wires": []
+    },
+    {
+        "id": "3e3bd906.6da186",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "604ac05d.2accd8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "number of sats",
+        "label": "number of sats",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 929,
+        "y": 424,
+        "wires": []
+    },
+    {
+        "id": "532123d8.be750c",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "604ac05d.2accd8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "HDOP",
+        "label": "HDOP",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 900,
+        "y": 456,
+        "wires": []
+    },
+    {
+        "id": "c9ddc138.379ae8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "604ac05d.2accd8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Antenna altitude",
+        "label": "Antenna altitude",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 929.0833129882812,
+        "y": 488.0833435058594,
+        "wires": []
+    },
+    {
+        "id": "1fc82d5e.c28973",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "To Waypoint",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 921.88330078125,
+        "y": 624.88330078125,
+        "wires": []
+    },
+    {
+        "id": "31aa5072.e3807",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "From Waypoint",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 931.88330078125,
+        "y": 591.88330078125,
+        "wires": []
+    },
+    {
+        "id": "b94ff398.d4114",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "name": "Dest.WP LAT",
+        "label": "Dest.WP LAT",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 936,
+        "y": 657,
+        "wires": []
+    },
+    {
+        "id": "7ad3724f.4bf6bc",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Dest. WP LON",
+        "label": "Dest. WP LON",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 934,
+        "y": 689,
+        "wires": []
+    },
+    {
+        "id": "ce0b29a9.5ee6c",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "Range to Dest.",
+        "label": "Range to Dest.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 933.75,
+        "y": 721.75,
+        "wires": []
+    },
+    {
+        "id": "b9230e9d.e7a31",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 8,
+        "width": "0",
+        "height": "0",
+        "name": "BRG to Dest.",
+        "label": "BRG to Dest.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 930,
+        "y": 753,
+        "wires": []
+    },
+    {
+        "id": "21b93ff4.7965f",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 9,
+        "width": "0",
+        "height": "0",
+        "name": "VMG to Dest.",
+        "label": "VMG to Dest.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 941,
+        "y": 785,
+        "wires": []
+    },
+    {
+        "id": "9dd6929a.e86b1",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Arrival Status",
+        "label": "Arrival Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 942,
+        "y": 817,
+        "wires": []
+    },
+    {
+        "id": "73ac04e1.52c2f4",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 11,
+        "width": "0",
+        "height": "0",
+        "name": "Track Degrees true",
+        "label": "Track Degrees (true)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 935.75,
+        "y": 990.75,
+        "wires": []
+    },
+    {
+        "id": "b4630c19.d0cf8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 12,
+        "width": "0",
+        "height": "0",
+        "name": "Track Degrees (mag)",
+        "label": "Track Degrees (mag)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 949.88330078125,
+        "y": 1024.88330078125,
+        "wires": []
+    },
+    {
+        "id": "c51e54a0.08597",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "2e992207.609d26",
+        "order": 14,
+        "width": "0",
+        "height": "0",
+        "name": "SOG (kn)",
+        "label": "SOG (kn)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 909.88330078125,
+        "y": 1057.4833068847656,
+        "wires": []
+    },
+    {
+        "id": "5ec2cf7a.f04bd",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "f0a8cf1.e62c73",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Depth (feet)",
+        "label": "Depth (feet)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 931.8001098632812,
+        "y": 1210.2833557128906,
+        "wires": []
+    },
+    {
+        "id": "a2b77259.a29848",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "f0a8cf1.e62c73",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Depth (meter)",
+        "label": "Depth (meter)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 932.8001098632812,
+        "y": 1242.2833557128906,
+        "wires": []
+    },
+    {
+        "id": "bcd53fe.5db604",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "f0a8cf1.e62c73",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Depth (fathoms)",
+        "label": "Depth (fathoms)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 942.8001098632812,
+        "y": 1273.2833251953125,
+        "wires": []
+    },
+    {
+        "id": "fae3ff25.7351f8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "f0a8cf1.e62c73",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Depth of Water (feet)",
+        "label": "Depth of Water (feet)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1042.75,
+        "y": 1340.75,
+        "wires": []
+    },
+    {
+        "id": "f46d6eb6.039798",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "HDG (true)",
+        "label": "HDG (true)",
+        "format": "{{msg.tHdg}}",
+        "layout": "row-spread",
+        "x": 1012.75,
+        "y": 1522.75,
+        "wires": []
+    },
+    {
+        "id": "309b8dc.9284af2",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "HDG (mag)",
+        "label": "HDG (mag)",
+        "format": "{{msg.mHdg}}",
+        "layout": "row-spread",
+        "x": 1012.75,
+        "y": 1555.75,
+        "wires": []
+    },
+    {
+        "id": "a809e211.894bb8",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Speed trough Water (kn)",
+        "label": "Speed trough Water (kn)",
+        "format": "{{msg.knSpd}}",
+        "layout": "row-spread",
+        "x": 1053.75,
+        "y": 1586.75,
+        "wires": []
+    },
+    {
+        "id": "659f8368.6cadcc",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "f0a8cf1.e62c73",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "Water temp.",
+        "label": "Water temp.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1015.066650390625,
+        "y": 1483.683349609375,
+        "wires": []
+    },
+    {
+        "id": "2db3dd55.24141a",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "596dfba5.8c720c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Speed trough Water (km)",
+        "label": "Speed trough Water (km)",
+        "format": "{{msg.kmSpd}}",
+        "layout": "row-spread",
+        "x": 1054.88330078125,
+        "y": 1619.88330078125,
+        "wires": []
+    },
+    {
+        "id": "5459597e.30b578",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "1bfc320.838e14e",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "name": "Total water dist.",
+        "label": "Total water dist.",
+        "format": "{{msg.ToWD}}",
+        "layout": "row-spread",
+        "x": 1040.88330078125,
+        "y": 1668.4834594726562,
+        "wires": []
+    },
+    {
+        "id": "e7b0abb5.80d67",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "1bfc320.838e14e",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "name": "Trip ground Dist.",
+        "label": "Trip ground Dist.",
+        "format": "{{msg.TrGD}}",
+        "layout": "row-spread",
+        "x": 1055.5333251953125,
+        "y": 1764.0831909179688,
+        "wires": []
+    },
+    {
+        "id": "d4852b88.5aa898",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "1bfc320.838e14e",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "name": "Total Ground Dist.",
+        "label": "Total Ground Dist.",
+        "format": "{{msg.ToGD}}",
+        "layout": "row-spread",
+        "x": 1053.5333251953125,
+        "y": 1731.0831909179688,
+        "wires": []
+    },
+    {
+        "id": "33dc8096.ca6848",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "1bfc320.838e14e",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "name": "Trip water dist.",
+        "label": "Trip water dist.",
+        "format": "{{msg.TrWD}}",
+        "layout": "row-spread",
+        "x": 1043.5333251953125,
+        "y": 1699.083251953125,
+        "wires": []
+    },
+    {
+        "id": "2446ca21.7fa01e",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "7db9a1f8.c9b498",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "XTE",
+        "label": "XTE",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 901.75,
+        "y": 525.75,
+        "wires": []
+    },
+    {
+        "id": "ab3368d0.5a222",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "7db9a1f8.c9b498",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Steer",
+        "label": "Steer",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 903.75,
+        "y": 559.75,
+        "wires": []
+    },
+    {
+        "id": "f6c2c9f352d77da5",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "AWS",
+        "label": "AWS",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 909.0000610351562,
+        "y": 1960.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "b51a1286c1342a42",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "AWA",
+        "label": "Apparent Wind Angle",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 909.0000610351562,
+        "y": 1920.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "0991e968bb37877c",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "RSA",
+        "label": "RSA",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 909.0000610351562,
+        "y": 2000.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "b184abd7a21e46e7",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "AWS",
+        "label": "AWS",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 909.0000610351562,
+        "y": 1880.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "ea870161930244d6",
+        "type": "ui_text",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "order": 10,
+        "width": "0",
+        "height": "0",
+        "name": "AWA",
+        "label": "Apparent Wind Angle",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 909.0000610351562,
+        "y": 1840.0000305175781,
+        "wires": []
+    },
+    {
+        "id": "fa638f24.5d0808",
+        "type": "ui_gauge",
+        "z": "c4bfeb15a0b5facf",
+        "name": "COG",
+        "group": "b0652885.6c6d8",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "compass",
+        "title": "Course over Ground",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "min": 0,
+        "max": "360",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 910,
+        "y": 955,
+        "wires": []
+    },
+    {
+        "id": "4450ef39.b653e",
+        "type": "ui_gauge",
+        "z": "c4bfeb15a0b5facf",
+        "name": "",
+        "group": "b0652885.6c6d8",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Speed Over Ground",
+        "label": "units",
+        "format": "{{msg.payload}}",
+        "min": 0,
+        "max": "15",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 958.36669921875,
+        "y": 923.25,
+        "wires": []
+    },
+    {
+        "id": "256561c.b86a09e",
+        "type": "ui_template",
+        "z": "c4bfeb15a0b5facf",
+        "group": "40a6636b.25d694",
+        "name": "Transducer Data",
+        "order": 1,
+        "width": "6",
+        "height": "6",
+        "format": "<table id=\"table\" border=\"1\">\n <tr>\n <th>Name</th> \n <th>Type</th>\n <th>Data</th>\n <th>Unit</th>\n </tr>\n <tbody>\n <tr ng-repeat=\"row in msg.payload\">\n <td ng-repeat=\"item in row\" >{{item}}</td>\n </tr>\n </tbody>\n</table>\n\n",
+        "storeOutMessages": false,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 926,
+        "y": 1172.9999694824219,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d59ebc4221065291",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Depth",
+        "entityConfig": "93966bad61fb178b",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1230,
+        "y": 1340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "146651da.31421e",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Water temp.",
+        "func": "// Return raw value as C\n\nmsg.payload = Number(msg.Satz[1]); // * 1.8 + 32;\n        \nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 712,
+        "y": 1478,
+        "wires": [
+            [
+                "659f8368.6cadcc",
+                "947a791ed9b50615"
+            ]
+        ]
+    },
+    {
+        "id": "947a791ed9b50615",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Water Temperature",
+        "entityConfig": "05257ec8e6bec3d3",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1290,
+        "y": 1480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "383ac9009d7e6a39",
+        "type": "tcp in",
+        "z": "c4bfeb15a0b5facf",
+        "name": "Get NMEA from YDWG",
+        "server": "client",
+        "host": "192.168.8.20",
+        "port": "1456",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "52228ddc.131534"
+            ]
+        ]
+    },
+    {
+        "id": "58100cac738057ba",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "decimal LAT",
+        "func": "//convert and format decimal latitude\n \nvar dd = ~~(msg.Satz[3] / 100);\nvar ss = msg.Satz[3] - dd * 100;\nvar declatlng = dd + ss / 60;\n\n\nif (msg.Satz[4] == \"W\" || msg.Satz[4] == \"S\") {\n       msg.payload = (-1 * declatlng).toFixed(7);\n} else {\n       msg.payload = declatlng.toFixed(7);\n}\n   \nreturn [msg];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 709,
+        "y": 1093,
         "wires": [
             [
                 "feffb939a9b25752"
             ]
         ]
+    },
+    {
+        "id": "f76bd83ed443112c",
+        "type": "function",
+        "z": "c4bfeb15a0b5facf",
+        "name": "decimal LON",
+        "func": "//convert and format decimal longitude\n \nvar dd = ~~(msg.Satz[5] / 100);\nvar ss = msg.Satz[5] - dd * 100;\nvar declatlng = dd + ss / 60;\n\n\nif (msg.Satz[6] == \"W\" || msg.Satz[6] == \"S\") {\n       msg.payload = (-1 * declatlng).toFixed(7);\n} else {\n       msg.payload = declatlng.toFixed(7);\n}\n   \nreturn [msg];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 709,
+        "y": 1126,
+        "wires": [
+            [
+                "56277f63c6d1bdd3"
+            ]
+        ]
+    },
+    {
+        "id": "feffb939a9b25752",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "LATdec",
+        "entityConfig": "64b9360422375a88",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1160,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "56277f63c6d1bdd3",
+        "type": "ha-sensor",
+        "z": "c4bfeb15a0b5facf",
+        "name": "LONdec",
+        "entityConfig": "74e076338606fc55",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1160,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36538c2b4ee8c5bc",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "ef03169a9feb3396",
+        "name": "SOG",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "SOG"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "speed"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kn"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "c4760c4026b9fbb6",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "44862df9b98c4b6d",
+        "name": "COG",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "COG"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "172c54578c852f2d",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "df0293e6aff8a15b",
+        "name": "LAT",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LAT"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "2482184f4ad2eb67",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "50ae81c58f38d00d",
+        "name": "LON",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LON"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "116cf96ee16cb2e3",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "183ff56b1345f079",
+        "name": "DepthBelowTransducer",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "DepthBelowTransducer"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "ft"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "95237685892bad5f",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "6e585bd0f435ce58",
+        "name": "GPSTime",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSTime"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "date"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "f7e733d2f1e66d00",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "c28e18225a3bbea0",
+        "name": "GPSQuality",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSQuality"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "7d1bd98111c9f44c",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "7509242e53c495d5",
+        "name": "GPSSatellites",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "GPSSatellites"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "97b112372f52f973",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "d2eadfdb1b7ff54b",
+        "name": "AWS",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "speed"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kn"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "6eae8aaf035d4363",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "e4b0b6af05f6764b",
+        "name": "AWA",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "AWA"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "dbf74f8a2ccb4664",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "6b59d5605322c419",
+        "name": "RSA",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "RSA"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "b0652885.6c6d8",
+        "type": "ui_group",
+        "name": "Navigation Data",
+        "tab": "6bc1a2cf.70709c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "596dfba5.8c720c",
+        "type": "ui_group",
+        "name": "Compass",
+        "tab": "6bc1a2cf.70709c",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "e9660793.9419",
+        "type": "ui_group",
+        "name": "Routing Data",
+        "tab": "5f14a6c8.fe72a",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "604ac05d.2accd8",
+        "type": "ui_group",
+        "name": "Satellite Data",
+        "tab": "d15da7d4.0fb23",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "2e992207.609d26",
+        "type": "ui_group",
+        "name": "RMB",
+        "tab": "5f14a6c8.fe72a",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "f0a8cf1.e62c73",
+        "type": "ui_group",
+        "name": "Depths",
+        "tab": "6bc1a2cf.70709c",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "1bfc320.838e14e",
+        "type": "ui_group",
+        "name": "Trip",
+        "tab": "5f14a6c8.fe72a",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "7db9a1f8.c9b498",
+        "type": "ui_group",
+        "name": "not in use",
+        "tab": "d15da7d4.0fb23",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "40a6636b.25d694",
+        "type": "ui_group",
+        "name": "Transducer Data",
+        "tab": "d15da7d4.0fb23",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "93966bad61fb178b",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "df0c5bbd8c2fd587",
+        "name": "Depth",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Depth"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "ft"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "05257ec8e6bec3d3",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "89cf8b2941e2a689",
+        "name": "Water Temperature",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Water Temperature"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "temperature"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "°C"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "64b9360422375a88",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "63514d61172f08a0",
+        "name": "LATdec",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LATdec"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "74e076338606fc55",
+        "type": "ha-entity-config",
+        "server": "15b25ea117ca037f",
+        "deviceConfig": "3606a3b9a149f577",
+        "name": "LONdec",
+        "version": "6",
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "LONdec"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            },
+            {
+                "property": "state_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "15b25ea117ca037f",
+        "type": "server",
+        "name": "sandpiper1.local",
+        "version": 5,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "ef03169a9feb3396",
+        "type": "ha-device-config",
+        "name": "SOG",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "44862df9b98c4b6d",
+        "type": "ha-device-config",
+        "name": "COG",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "df0293e6aff8a15b",
+        "type": "ha-device-config",
+        "name": "LAT",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "50ae81c58f38d00d",
+        "type": "ha-device-config",
+        "name": "LON",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "183ff56b1345f079",
+        "type": "ha-device-config",
+        "name": "DepthBelowTransducer",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "6e585bd0f435ce58",
+        "type": "ha-device-config",
+        "name": "GPSTime",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "c28e18225a3bbea0",
+        "type": "ha-device-config",
+        "name": "GPSQuality",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "7509242e53c495d5",
+        "type": "ha-device-config",
+        "name": "GPSSatellites",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "d2eadfdb1b7ff54b",
+        "type": "ha-device-config",
+        "name": "AWS",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "e4b0b6af05f6764b",
+        "type": "ha-device-config",
+        "name": "AWA",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "6b59d5605322c419",
+        "type": "ha-device-config",
+        "name": "RSA",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "6bc1a2cf.70709c",
+        "type": "ui_tab",
+        "name": "Basic Data",
+        "icon": "dashboard",
+        "order": 2
+    },
+    {
+        "id": "5f14a6c8.fe72a",
+        "type": "ui_tab",
+        "name": "Routing Data",
+        "icon": "dashboard",
+        "order": 3
+    },
+    {
+        "id": "d15da7d4.0fb23",
+        "type": "ui_tab",
+        "name": "Other stuff",
+        "icon": "dashboard",
+        "order": 4
+    },
+    {
+        "id": "df0c5bbd8c2fd587",
+        "type": "ha-device-config",
+        "name": "Depth",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "89cf8b2941e2a689",
+        "type": "ha-device-config",
+        "name": "Water Temperature",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "63514d61172f08a0",
+        "type": "ha-device-config",
+        "name": "LATdec",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "3606a3b9a149f577",
+        "type": "ha-device-config",
+        "name": "LONdec",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
     }
 ]
